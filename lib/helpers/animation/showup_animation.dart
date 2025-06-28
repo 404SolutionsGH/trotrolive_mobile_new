@@ -6,11 +6,12 @@ class ShowUpAnimation extends StatefulWidget {
   final Widget child;
 
   /// GETTING THE ANIMATION DURATION
-  int? delay;
+  final int? delay;
 
-  ShowUpAnimation({super.key, required this.child, this.delay});
+  const ShowUpAnimation({super.key, required this.child, required this.delay});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ShowUpAnimationState createState() => _ShowUpAnimationState();
 }
 

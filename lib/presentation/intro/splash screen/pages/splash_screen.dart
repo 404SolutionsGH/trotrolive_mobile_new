@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:trotrolive_mobile_new/utils/constants/color%20constants/colors.dart';
 import 'package:trotrolive_mobile_new/utils/constants/image%20constants/image_constants.dart';

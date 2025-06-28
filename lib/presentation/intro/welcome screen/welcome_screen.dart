@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/helpers/widgets/custom_button.dart';
@@ -6,7 +5,7 @@ import '../../../utils/constants/color constants/colors.dart';
 import '../../../utils/constants/image constants/image_constants.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
@@ -163,11 +162,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Future _displayBottomSheet(BuildContext context) {
-    // final controller = Get.put(NewauthController());
-    // final controller2 = Get.put(SignUpController());
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    String errorMessage = 'Please enter phone number !!';
-
     return showModalBottomSheet(
       showDragHandle: true,
       backgroundColor: Colors.white,

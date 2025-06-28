@@ -1,16 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../../helpers/animation/showup_animation.dart';
-import '../../../helpers/text_widgets.dart';
-import '../../../helpers/widgets/custom_button.dart';
 import '../../../utils/constants/color constants/colors.dart';
-import '../../../utils/constants/image constants/image_constants.dart';
-import '../welcome screen/welcome_screen.dart';
 import 'model/onboarding_model.dart';
 
 class OnboardingScreen extends StatefulWidget {

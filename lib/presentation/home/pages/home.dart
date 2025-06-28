@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
+import '../../../helpers/widgets/cedi_widget.dart';
 import '../../../utils/constants/color constants/colors.dart';
-import '../../../utils/constants/image constants/image_constants.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -14,7 +15,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final layoutHeight = MediaQuery.of(context).size.height;
     final layoutWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: barBg,
@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       headingTextMedium(
                           context,
-                          "What are you doing this weekend?",
+                          "Where are you going this weekend?",
                           FontWeight.w500,
                           18,
                           whiteColor),
@@ -116,7 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         onChanged: (value) => (),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            print('Type something');
                             return 'Type something';
                           }
                           return null;
@@ -263,243 +262,268 @@ class _MyHomePageState extends State<MyHomePage> {
                   labelseeAllText(context, 'See All'),
                 ],
               ),
-              Container(
-                height: 160,
-                width: layoutWidth,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(17),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 110,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 150,
-                            width: 210,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 90,
-                                    width: 40,
-                                    child: Column(
+              ShowUpAnimation(
+                delay: 200,
+                child: Container(
+                  height: 160,
+                  width: layoutWidth,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(17),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 110,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 150,
+                              width: 210,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 90,
+                                      width: 40,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 18,
+                                            width: 18,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.arrow_drop_up_sharp,
+                                                color: whiteColor,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 3),
+                                          Icon(
+                                            Icons.circle,
+                                            color: outlineGrey,
+                                            size: 6,
+                                          ),
+                                          SizedBox(height: 3),
+                                          Icon(
+                                            Icons.circle,
+                                            color: outlineGrey,
+                                            size: 6,
+                                          ),
+                                          SizedBox(height: 3),
+                                          Icon(
+                                            Icons.circle,
+                                            color: outlineGrey,
+                                            size: 6,
+                                          ),
+                                          SizedBox(height: 3),
+                                          Icon(
+                                            Icons.circle,
+                                            color: outlineGrey,
+                                            size: 6,
+                                          ),
+                                          SizedBox(height: 3),
+                                          Icon(
+                                            Icons.circle,
+                                            color: outlineGrey,
+                                            size: 6,
+                                          ),
+                                          SizedBox(height: 3),
+                                          Container(
+                                            height: 18,
+                                            width: 18,
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                            ),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.arrow_drop_down_sharp,
+                                                color: whiteColor,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          height: 18,
-                                          width: 18,
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue,
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                          ),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.arrow_drop_up_sharp,
-                                              color: whiteColor,
-                                              size: 18,
+                                        headingTextMedium(
+                                          context,
+                                          'Dansoman',
+                                          FontWeight.w600,
+                                          14,
+                                        ),
+                                        subheadingText(
+                                          context,
+                                          'June 23, 14:00',
+                                          TextAlign.start,
+                                          10,
+                                        ),
+                                        SizedBox(height: 23),
+                                        headingTextMedium(
+                                          context,
+                                          'Kasoa',
+                                          FontWeight.w600,
+                                          14,
+                                        ),
+                                        Row(
+                                          children: [
+                                            subheadingText(
+                                              context,
+                                              'Transport Type: ',
+                                              TextAlign.start,
+                                              10,
                                             ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 3),
-                                        Icon(
-                                          Icons.circle,
-                                          color: outlineGrey,
-                                          size: 6,
-                                        ),
-                                        SizedBox(height: 3),
-                                        Icon(
-                                          Icons.circle,
-                                          color: outlineGrey,
-                                          size: 6,
-                                        ),
-                                        SizedBox(height: 3),
-                                        Icon(
-                                          Icons.circle,
-                                          color: outlineGrey,
-                                          size: 6,
-                                        ),
-                                        SizedBox(height: 3),
-                                        Icon(
-                                          Icons.circle,
-                                          color: outlineGrey,
-                                          size: 6,
-                                        ),
-                                        SizedBox(height: 3),
-                                        Icon(
-                                          Icons.circle,
-                                          color: outlineGrey,
-                                          size: 6,
-                                        ),
-                                        SizedBox(height: 3),
-                                        Container(
-                                          height: 18,
-                                          width: 18,
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                          ),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.arrow_drop_down_sharp,
-                                              color: whiteColor,
-                                              size: 18,
+                                            subheadingText(
+                                              context,
+                                              'Trotro',
+                                              TextAlign.start,
+                                              10,
+                                              2,
+                                              Colors.green,
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ],
                                     ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 110,
+                              width: 1,
+                              color: outlineGrey,
+                            ),
+                            SizedBox(width: 8),
+                            Container(
+                              height: 120,
+                              width: 100,
+                              decoration: BoxDecoration(),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 5),
+                                  subheadingText(
+                                    context,
+                                    'TRIP AMOUNT',
+                                    TextAlign.start,
+                                    11,
                                   ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Row(
                                     children: [
+                                      CediSign(
+                                        size: 21,
+                                        weight: FontWeight.bold,
+                                      ),
+                                      SizedBox(width: 1),
                                       headingTextMedium(
                                         context,
-                                        'Dansoman',
+                                        '5.00p',
                                         FontWeight.w600,
-                                        14,
-                                      ),
-                                      subheadingText(
-                                        context,
-                                        'June 23, 14:00',
-                                        TextAlign.start,
-                                        10,
-                                      ),
-                                      SizedBox(height: 23),
-                                      headingTextMedium(
-                                        context,
-                                        'Kasoa',
-                                        FontWeight.w600,
-                                        14,
-                                      ),
-                                      subheadingText(
-                                        context,
-                                        'June 23, 14:00',
-                                        TextAlign.start,
-                                        10,
+                                        21,
                                       ),
                                     ],
+                                  ),
+                                  SizedBox(height: 1),
+                                  subheadingText(
+                                    context,
+                                    'TAKE NOTE!!',
+                                    TextAlign.start,
+                                    11,
+                                  ),
+                                  SizedBox(height: 2),
+                                  subheadingText(
+                                    context,
+                                    'ALL FARES ARE ENDORSED BY THE GPRTU.',
+                                    TextAlign.start,
+                                    10,
+                                    3,
+                                    Colors.blue,
                                   ),
                                 ],
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        color: primaryContainerShade,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                MingCute.heart_line,
+                                color: outlineGrey,
+                                size: 17,
+                              ),
+                              subheadingText(
+                                context,
+                                'Favorite',
+                                TextAlign.start,
+                                11,
+                              ),
+                            ],
                           ),
-                          Container(
-                            height: 110,
-                            width: 1,
-                            color: outlineGrey,
+                          SizedBox(width: 50),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.ios_share_outlined,
+                                color: outlineGrey,
+                                size: 17,
+                              ),
+                              subheadingText(
+                                context,
+                                'Share',
+                                TextAlign.start,
+                                11,
+                              ),
+                            ],
                           ),
-                          SizedBox(width: 8),
-                          Container(
-                            height: 120,
-                            width: 100,
-                            decoration: BoxDecoration(),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 5),
-                                subheadingText(
-                                  context,
-                                  'TRIP AMOUNT',
-                                  TextAlign.start,
-                                  11,
-                                ),
-                                headingTextMedium(
-                                  context,
-                                  '50.00',
-                                  FontWeight.w600,
-                                  35,
-                                ),
-                                subheadingText(
-                                  context,
-                                  'GHANA CEDI',
-                                  TextAlign.start,
-                                  11,
-                                ),
-                                SizedBox(height: 2),
-                                subheadingText(
-                                  context,
-                                  'GPRTU ENDORSED FARES!',
-                                  TextAlign.start,
-                                  10,
-                                  2,
-                                  Colors.blue,
-                                ),
-                              ],
-                            ),
+                          SizedBox(width: 50),
+                          Row(
+                            children: [
+                              Icon(
+                                MingCute.eye_2_line,
+                                color: outlineGrey,
+                                size: 17,
+                              ),
+                              subheadingText(
+                                context,
+                                '1.2k visits',
+                                TextAlign.start,
+                                11,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
-                    Divider(
-                      color: primaryContainerShade,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              MingCute.heart_line,
-                              color: outlineGrey,
-                              size: 17,
-                            ),
-                            subheadingText(
-                              context,
-                              'Favorite',
-                              TextAlign.start,
-                              11,
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 50),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.ios_share_outlined,
-                              color: outlineGrey,
-                              size: 17,
-                            ),
-                            subheadingText(
-                              context,
-                              'Share',
-                              TextAlign.start,
-                              11,
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 50),
-                        Row(
-                          children: [
-                            Icon(
-                              MingCute.eye_2_line,
-                              color: outlineGrey,
-                              size: 17,
-                            ),
-                            subheadingText(
-                              context,
-                              '1.2k visits',
-                              TextAlign.start,
-                              11,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -606,28 +630,40 @@ class _MyHomePageState extends State<MyHomePage> {
                                     children: [
                                       headingTextMedium(
                                         context,
-                                        'Dansoman',
+                                        'Abuakwa',
                                         FontWeight.w600,
                                         14,
                                       ),
                                       subheadingText(
                                         context,
-                                        'June 23, 14:00',
+                                        'April 5, 11:00',
                                         TextAlign.start,
                                         10,
                                       ),
                                       SizedBox(height: 23),
                                       headingTextMedium(
                                         context,
-                                        'Kasoa',
+                                        'Kejetia Market',
                                         FontWeight.w600,
                                         14,
                                       ),
-                                      subheadingText(
-                                        context,
-                                        'June 23, 14:00',
-                                        TextAlign.start,
-                                        10,
+                                      Row(
+                                        children: [
+                                          subheadingText(
+                                            context,
+                                            'Transport Type: ',
+                                            TextAlign.start,
+                                            10,
+                                          ),
+                                          subheadingText(
+                                            context,
+                                            'Trotro',
+                                            TextAlign.start,
+                                            10,
+                                            2,
+                                            Colors.green,
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -656,25 +692,36 @@ class _MyHomePageState extends State<MyHomePage> {
                                   TextAlign.start,
                                   11,
                                 ),
-                                headingTextMedium(
-                                  context,
-                                  '50.00',
-                                  FontWeight.w600,
-                                  35,
+                                SizedBox(height: 3),
+                                Row(
+                                  children: [
+                                    CediSign(
+                                      size: 21,
+                                      weight: FontWeight.bold,
+                                    ),
+                                    SizedBox(width: 1),
+                                    headingTextMedium(
+                                      context,
+                                      '9.50p',
+                                      FontWeight.w600,
+                                      21,
+                                    ),
+                                  ],
                                 ),
+                                SizedBox(height: 1),
                                 subheadingText(
                                   context,
-                                  'GHANA CEDI',
+                                  'TAKE NOTE!!',
                                   TextAlign.start,
                                   11,
                                 ),
                                 SizedBox(height: 2),
                                 subheadingText(
                                   context,
-                                  'GPRTU ENDORSED FARES!',
+                                  'ALL FARES ARE ENDORSED BY THE GPRTU.',
                                   TextAlign.start,
                                   10,
-                                  2,
+                                  3,
                                   Colors.blue,
                                 ),
                               ],
