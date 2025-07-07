@@ -1,30 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:trotrolive_mobile_new/presentation/intro/splash%20screen/pages/splash_screen.dart';
-import 'helpers/widgets/generate_route.dart';
-import 'utils/constants/color constants/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trotrolive_mobile_new/trotro_app_blocs.dart';
+import 'trotro_app_observer.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Trotrolive Mobile',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-      },
-      onGenerateRoute: generateRoute,
-      theme: ThemeData(
-        fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-        useMaterial3: true,
-      ),
-    );
-  }
+  Bloc.observer = const TrotroObserver();
+  runApp(const TrotroAppBlocs());
 }

@@ -15,9 +15,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final layoutWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: barBg,
+      backgroundColor: barBg2,
       extendBody: true,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(190),
@@ -94,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 10),
               SizedBox(
                 height: 120,
-                width: layoutWidth,
+                width: MediaQuery.of(context).size.width,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -188,18 +187,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               Container(
-                height: 140,
-                width: layoutWidth,
+                height: 145,
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: whiteColor,
+                border: Border.all( 
+                  width: 2.5,
+                  color: primaryContainerShade),
                   borderRadius: BorderRadius.circular(17),
                 ),
                 child: Row(
                   children: [
                     SizedBox(
                       height: 140,
-                      width: 180,
+                      width: 175,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
@@ -266,10 +268,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 delay: 200,
                 child: Container(
                   height: 160,
-                  width: layoutWidth,
+                  width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: whiteColor,
+                                      border: Border.all( width: 2.5,color: primaryContainerShade),
+
                     borderRadius: BorderRadius.circular(17),
                   ),
                   child: Column(
@@ -529,10 +533,11 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(height: 10),
               Container(
                 height: 160,
-                width: layoutWidth,
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: whiteColor,
+                  border: Border.all(color: primaryContainerShade, width: 2.5,),
                   borderRadius: BorderRadius.circular(17),
                 ),
                 child: Column(

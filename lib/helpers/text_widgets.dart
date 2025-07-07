@@ -149,7 +149,7 @@ subheadingTextMedium(context, String text, double? size) {
   return Text(
     textAlign: TextAlign.start,
     overflow: TextOverflow.visible,
-    maxLines: 2,
+    maxLines: 4,
     text,
     style: Theme.of(context).textTheme.bodySmall!.copyWith(
           color: subtitleColor,

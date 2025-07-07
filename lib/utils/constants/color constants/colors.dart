@@ -9,6 +9,7 @@ const Color tertiaryColor = Color.fromRGBO(255, 255, 255, 9);
 const Color primaryShade = Color.fromARGB(255, 31, 66, 148);
 const Color primaryContainerShade = Color.fromARGB(190, 228, 235, 252);
 const Color primarySucessShade = Color.fromARGB(189, 228, 252, 229);
+const Color primarySucessShade2 = Color.fromARGB(189, 228, 252, 229);
 const Color secondaryColorB = Color.fromRGBO(255, 255, 255, 9);
 Color secondaryColor2 = Colors.grey[300]!.withOpacity(0.28);
 const Color backgroundColor = Colors.black;
@@ -21,6 +22,7 @@ const blackColorShade2 = Color.fromRGBO(234, 148, 227, 1);
 const primaryBg = Color.fromARGB(255, 237, 237, 247);
 const secondaryBg = Color.fromARGB(255, 252, 253, 255);
 const barBg = Color(0xffe3e3ee);
+const barBg2 = Color.fromARGB(255, 239, 239, 247);
 const outlineGrey = Color.fromARGB(255, 219, 219, 219);
 
 //Pinput colors
