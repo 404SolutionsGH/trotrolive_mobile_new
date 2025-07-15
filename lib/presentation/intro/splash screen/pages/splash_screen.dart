@@ -13,6 +13,8 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
+  late AnimationController _controller2;
+  late Animation<Offset> _slideAnimation2;
 
   @override
   void initState() {
@@ -20,16 +22,28 @@ class _SplashScreenState extends State<SplashScreen>
     splashController();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
     );
 
     _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, -1), end: const Offset(0, 0))
+        Tween<Offset>(begin: const Offset(-1, 0), end: const Offset(0, 0))
+            .animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+
+    _controller2 = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    _slideAnimation2 =
+        Tween<Offset>(begin: const Offset(2, 0), end: const Offset(0, 0))
             .animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
 
     _controller.forward();
+    _controller2.forward();
   }
 
   @override
@@ -39,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void splashController() async {
-    await Future.delayed(Duration(seconds: 7));
+    await Future.delayed(Duration(seconds: 5));
     if (mounted) {
       Navigator.pushNamedAndRemoveUntil(
           context, '/onboarding', (route) => false);
@@ -49,58 +63,52 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: secondaryBg,
       extendBodyBehindAppBar: true,
       extendBody: true,
       body: SafeArea(
         child: Stack(
           children: [
-            Image.asset(
-              bgwhiteImg,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
+            // Image.asset(
+            //   bgwhiteImg,
+            //   height: MediaQuery.of(context).size.height,
+            //   width: MediaQuery.of(context).size.width,
+            //   fit: BoxFit.cover,
+            // ),
             Positioned(
               child: Center(
-                child: SlideTransition(
-                  position: _slideAnimation,
-                  child: Container(
-                    height: 230,
-                    width: 230,
-                    decoration: BoxDecoration(
-                        color: secondaryBg,
-                        borderRadius: BorderRadius.circular(250)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          logo,
-                          height: 130,
-                          width: 130,
-                        ),
-                        Text(
-                          "Trotrolive",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall!
-                              .copyWith(
-                                color: primaryColor,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        Text(
-                          "Woyalo..woyalo!!",
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: secondaryColor,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                        ),
-                      ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SlideTransition(
+                      position: _slideAnimation,
+                      child: Image.asset(
+                        logo,
+                        height: 130,
+                        width: 130,
+                      ),
                     ),
-                  ),
+                    SlideTransition(
+                      position: _slideAnimation2,
+                      child: Text(
+                        "Trotrolive",
+                        style:
+                            Theme.of(context).textTheme.displaySmall!.copyWith(
+                                  color: primaryColor,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ),
+                    Text(
+                      "Woyalo..woyalo!!",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: secondaryColor,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
+                  ],
                 ),
               ),
             ),
