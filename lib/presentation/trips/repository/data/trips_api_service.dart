@@ -17,24 +17,30 @@ class TripsRemoteApiService {
       );
 
       if (response.statusCode == 200) {
-        var jsonString = jsonDecode(response.data);
-        var tripList = jsonString['Trips'];
+        final data = response.data;
 
-        if (tripList != null && tripList is Iterable) {
-          for (Map<String, dynamic> item in tripList) {
-            tripslist.add(TripsModel.fromJson(item));
+        if (data != null && data is List) {
+          for (var item in data) {
+            if (item is Map<String, dynamic>) {
+              tripslist.add(TripsModel.fromJson(item));
+            } else {
+              debugPrint('Unexpected item: $item');
+            }
           }
           return tripslist;
         } else {
-          debugPrint('Invalid data format. Response body: $jsonString');
+          debugPrint('Unexpected data structure: $data');
         }
       } else {
-        debugPrint("error:  ${response.statusCode}");
+        debugPrint("Server error: ${response.statusCode}");
         return null;
       }
     } on DioException catch (error) {
-      debugPrint(error.toString());
-      throw Error;
+      debugPrint("Dio error: $error");
+      return null;
+    } catch (e) {
+      debugPrint("Unexpected error: $e");
+      return null;
     }
   }
 }

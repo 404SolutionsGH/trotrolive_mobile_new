@@ -1,10 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
-import '../../utils/constants/api constants/api_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../utils/constants/api constants/api_constants.dart';
 
 class DioHelper {
   static late Dio dio;
+  static late CookieJar cookieJar;
 
   static void init() {
     dio = Dio(
@@ -14,17 +18,32 @@ class DioHelper {
         receiveTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
       ),
     );
 
+    // Cookie manager for CSRF token handling
+    cookieJar = CookieJar();
+    dio.interceptors.add(CookieManager(cookieJar));
+
     dio.interceptors.add(
       InterceptorsWrapper(
-        onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 401) {
-            debugPrint('Unauthorized error, token might be expired.');
-            debugPrint(e.response!.statusMessage);
-          }
+        onRequest: (options, handler) async {
+          // Add CSRF token from cookies to the header
+          final uri = Uri.parse(baseUrl);
+          final cookies = await cookieJar.loadForRequest(uri);
+          final csrfCookie = cookies.firstWhere(
+            (c) => c.name.toLowerCase() == 'csrftoken',
+            orElse: () => Cookie('csrftoken', ''),
+          );
+
+          options.headers['X-CSRFTOKEN'] = csrfCookie.value;
+
+          return handler.next(options);
+        },
+        onError: (e, handler) {
+          debugPrint("Error: ${e.message}");
           return handler.next(e);
         },
       ),
@@ -33,10 +52,17 @@ class DioHelper {
 
   static Future<void> addAuthHeader() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('authToken');
+    final csrfToken =
+        "8mlFD0B35c9w70ebKooPYvfR6ci0sp6g1XGYlF7XVDG8Z5DrMjRPRSOMZmpTbNoi";
+    //prefs.getString('csrftoken');
 
-    dio.options.headers['Authorization'] = 'Bearer $token';
-    debugPrint('Authorization Header Set: Bearer $token');
+    if (csrfToken != null && csrfToken.isNotEmpty) {
+      dio.options.headers['X-CSRFTOKEN'] = csrfToken;
+      debugPrint('CSRF Token Set: $csrfToken');
+    } else {
+      debugPrint('No CSRF token found.');
+    }
+
     debugPrint('Request Headers: ${dio.options.headers}');
   }
 
@@ -46,8 +72,6 @@ class DioHelper {
   }) async {
     await addAuthHeader();
     debugPrint('Requesting $url with headers: ${dio.options.headers}');
-    debugPrint('Request headers: ${dio.options.headers}');
-
     return await dio.get(url, queryParameters: queryParameters);
   }
 
@@ -57,7 +81,6 @@ class DioHelper {
   }) async {
     await addAuthHeader();
     debugPrint('Posting to $url with data: $data');
-
     return await dio.post(url, data: data);
   }
 

@@ -35,6 +35,7 @@ headingTextMedium(context, String text,
   return Text(
     textAlign: TextAlign.start,
     overflow: TextOverflow.visible,
+    softWrap: true,
     maxLines: 2,
     text,
     style: Theme.of(context).textTheme.bodySmall!.copyWith(

@@ -1,12 +1,8 @@
-// To parse this JSON data, do
-//
-//     final  = FromJson(jsonString);
-
 class TripsModel {
   Ation startStation;
   Ation destination;
   String fare;
-  String route;
+  RouteModel route;
   int withinCity;
   DateTime createdAt;
   DateTime updatedAt;
@@ -21,19 +17,26 @@ class TripsModel {
     required this.updatedAt,
   });
 
+  @override
+  String toString() {
+    return 'Trip from ${startStation.name} to ${destination.name}';
+  }
+
   factory TripsModel.fromJson(Map<String, dynamic> json) {
     try {
       return TripsModel(
-        startStation: Ation.fromJson(json["start_station"]),
-        destination: Ation.fromJson(json["destination"]),
-        fare: json["fare"],
-        route: json["route"],
-        withinCity: json["within_city"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        startStation: Ation.fromJson(json["start_station"] ?? {}),
+        destination: Ation.fromJson(json["destination"] ?? {}),
+        fare: json["fare"] ?? "",
+        route: RouteModel.fromJson(json["route"] ?? {}),
+        withinCity: json["within_city"] ?? 0,
+        createdAt:
+            DateTime.tryParse(json["created_at"] ?? "") ?? DateTime.now(),
+        updatedAt:
+            DateTime.tryParse(json["updated_at"] ?? "") ?? DateTime.now(),
       );
     } catch (e) {
-      print("Error parsing TripsModel: $e");
+      print(" Error parsing TripsModel: $e");
       rethrow;
     }
   }
@@ -71,15 +74,18 @@ class Ation {
   });
 
   factory Ation.fromJson(Map<String, dynamic> json) => Ation(
-        name: json["name"],
-        stationAddress: json["station_address"],
-        coordinates:
-            List<double>.from(json["coordinates"].map((x) => x?.toDouble())),
+        name: json["name"] ?? "",
+        stationAddress: json["station_address"] ?? "",
+        coordinates: json["coordinates"] != null
+            ? List<double>.from(json["coordinates"].map((x) => x?.toDouble()))
+            : [],
         image: json["image"],
-        isBusStop: json["is_bus_stop"],
-        city: json["city"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        isBusStop: json["is_bus_stop"] ?? false,
+        city: json["city"] ?? 0,
+        createdAt:
+            DateTime.tryParse(json["created_at"] ?? "") ?? DateTime.now(),
+        updatedAt:
+            DateTime.tryParse(json["updated_at"] ?? "") ?? DateTime.now(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -91,5 +97,45 @@ class Ation {
         "city": city,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+class RouteModel {
+  final String id;
+  final String shortName;
+  final String longName;
+  final String description;
+  final String routeType;
+  final String color;
+  final String source;
+
+  RouteModel({
+    required this.id,
+    required this.shortName,
+    required this.longName,
+    required this.description,
+    required this.routeType,
+    required this.color,
+    required this.source,
+  });
+
+  factory RouteModel.fromJson(Map<String, dynamic> json) => RouteModel(
+        id: json['gtfs_route_id'] ?? '',
+        shortName: json['short_name'] ?? '',
+        longName: json['long_name'] ?? '',
+        description: json['description'] ?? '',
+        routeType: json['route_type'] ?? '',
+        color: json['color'] ?? '',
+        source: json['source'] ?? '',
+      );
+
+  Map<String, dynamic> toJson() => {
+        'gtfs_route_id': id,
+        'short_name': shortName,
+        'long_name': longName,
+        'description': description,
+        'route_type': routeType,
+        'color': color,
+        'source': source,
       };
 }

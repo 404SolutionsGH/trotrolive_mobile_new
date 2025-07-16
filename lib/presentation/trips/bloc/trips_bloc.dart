@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trotrolive_mobile_new/presentation/location/bloc/location_bloc.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/data/trips_api_service.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/model/trips_model.dart';
 part 'trips_event.dart';
@@ -7,8 +8,9 @@ part 'trips_state.dart';
 
 class TripsBloc extends Bloc<TripsEvent, TripsState> {
   final tripService = TripsRemoteApiService();
+  final LocationBloc locationbloc;
 
-  TripsBloc() : super(TripsInitial()) {
+  TripsBloc(this.locationbloc) : super(TripsInitial()) {
     on<FetchTripEvent>(fetchTrips);
   }
 
@@ -18,8 +20,13 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
       emit(TripsLoading());
       debugPrint("Trips Loading...");
 
-      String? startingPoint = event.startingPoint!.trim().toLowerCase();
-      String? destination = event.startingPoint!.trim().toLowerCase();
+      String? start = "Terminal Abeka lapaz";
+      String? end = "Terminal Kasoa Station";
+
+      String? startingPoint = start.trim().toLowerCase();
+      //event.startingPoint!.trim().toLowerCase();
+      String? destination = end.trim().toLowerCase();
+      // event.destination!.trim().toLowerCase();
 
       final fetchTrips =
           await tripService.fetchTripsApi(startingPoint, destination);
@@ -61,8 +68,9 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
             uniqueTrips.add(trip);
           }
         }
+        debugPrint("Trips received: ${uniqueTrips.length}");
 
-        debugPrint("Trips Fetched Successful => $fetchTrips");
+        debugPrint("Trips Fetched Successful => ${uniqueTrips.toList()}");
         emit(
           TripsFetchedState(
             message: "Trips Fetched Successfuly",
