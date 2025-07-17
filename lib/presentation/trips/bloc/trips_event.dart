@@ -11,3 +11,13 @@ class FetchTripEvent extends TripsEvent {
     this.destination,
   });
 }
+
+class LoadMoreTripsEvent extends TripsEvent {
+  final String? nextUrl;
+  final List<TripsModel> currentTrips;
+
+  LoadMoreTripsEvent({
+    required this.nextUrl,
+    required this.currentTrips,
+  });
+}

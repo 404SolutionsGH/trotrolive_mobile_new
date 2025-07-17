@@ -43,7 +43,7 @@ class StationsRemoteApiService {
         debugPrint("Error, HTTP Error: ${response.statusCode}");
         return null;
       }
-    } on DioException catch (error) {
+    } on DioException {
       throw Error;
     }
   }

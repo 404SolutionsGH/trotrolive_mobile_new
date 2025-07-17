@@ -27,8 +27,8 @@ class DioHelper {
 
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) async {         
-           final uri = Uri.parse(baseUrl);
+        onRequest: (options, handler) async {
+          final uri = Uri.parse(baseUrl);
           final cookies = await cookieJar.loadForRequest(uri);
           final csrfCookie = cookies.firstWhere(
             (c) => c.name.toLowerCase() == 'csrftoken',
@@ -53,7 +53,7 @@ class DioHelper {
         "8mlFD0B35c9w70ebKooPYvfR6ci0sp6g1XGYlF7XVDG8Z5DrMjRPRSOMZmpTbNoi";
     //prefs.getString('csrftoken');
 
-    if (csrfToken != null && csrfToken.isNotEmpty) {
+    if (csrfToken.isNotEmpty) {
       dio.options.headers['X-CSRFTOKEN'] = csrfToken;
       debugPrint('CSRF Token Set: $csrfToken');
     } else {
@@ -68,6 +68,10 @@ class DioHelper {
     Map<String, dynamic>? queryParameters,
   }) async {
     await addAuthHeader();
+    if (!url.startsWith('http')) {
+      url = '$baseUrl$url';
+    }
+
     debugPrint('Requesting $url with headers: ${dio.options.headers}');
     return await dio.get(url, queryParameters: queryParameters);
   }

@@ -9,81 +9,133 @@ part 'trips_state.dart';
 class TripsBloc extends Bloc<TripsEvent, TripsState> {
   final tripService = TripsRemoteApiService();
   final LocationBloc locationbloc;
+  bool isLoadingMore = false;
 
   TripsBloc(this.locationbloc) : super(TripsInitial()) {
     on<FetchTripEvent>(fetchTrips);
+    on<LoadMoreTripsEvent>((event, emit) async {
+      if (isLoadingMore) return;
+      isLoadingMore = true;
+      emit(TripsLoadingMore());
+
+      try {
+        final response = await tripService.fetchTripsApi(
+          null,
+          null,
+          url: event.nextUrl,
+        );
+
+        if (response != null) {
+          final allTrips = [...event.currentTrips, ...response.trips];
+          emit(TripsFetchedState(
+            message: "Trips Loaded",
+            trips: allTrips,
+            nextUrl: response.nextUrl,
+          ));
+        }
+      } catch (e) {
+        emit(TripsFailureState(error: 'Error loading more trips: $e'));
+      } finally {
+        isLoadingMore = false;
+      }
+    });
   }
 
-  Future<List<TripsModel>?> fetchTrips(
+  Future<void> fetchTrips(
       FetchTripEvent event, Emitter<TripsState> emit) async {
     try {
       emit(TripsLoading());
       debugPrint("Trips Loading...");
 
-      String? start = "Terminal Abeka lapaz";
-      String? end = "Terminal Kasoa Station";
+      final String? startingPoint = "Terminal Abeka lapaz".trim().toLowerCase();
+      final String? destination = "Terminal Kasoa Station".trim().toLowerCase();
 
-      String? startingPoint = start.trim().toLowerCase();
-      //event.startingPoint!.trim().toLowerCase();
-      String? destination = end.trim().toLowerCase();
-      // event.destination!.trim().toLowerCase();
+      List<TripsModel> allTrips = [];
+      String? nextUrl;
+      int pageCount = 0;
+      const int maxPages = 5;
 
-      final fetchTrips =
-          await tripService.fetchTripsApi(startingPoint, destination);
-      if (fetchTrips != null) {
-        List<TripsModel>? viceVersaTrips = await tripService.fetchTripsApi(
+      do {
+        final response = await tripService.fetchTripsApi(
           startingPoint,
           destination,
+          url: nextUrl,
         );
 
-        List<TripsModel> allTrips = fetchTrips;
-        if (viceVersaTrips != null) {
-          // allTrips.addAll(viceVersaTrips);
+        if (response != null) {
+          allTrips.addAll(response.trips);
+          nextUrl = response.nextUrl;
+          pageCount++;
+        } else {
+          break;
         }
+      } while (nextUrl != null && pageCount < maxPages);
 
-        Set<TripsModel> uniqueTrips = {};
+      final Set<TripsModel> uniqueTrips = {};
 
-        for (var trip in allTrips) {
-          if ((trip.startStation.name.trim().toLowerCase() == startingPoint &&
-                  trip.destination.name.trim().toLowerCase() == destination) ||
-              (trip.startStation.name.trim().toLowerCase() == destination &&
-                  trip.destination.name.trim().toLowerCase() ==
-                      startingPoint)) {
-            uniqueTrips.add(trip);
-          }
+      for (var trip in allTrips) {
+        if ((trip.startStation.name.trim().toLowerCase() == startingPoint &&
+                trip.destination.name.trim().toLowerCase() == destination) ||
+            (trip.startStation.name.trim().toLowerCase() == destination &&
+                trip.destination.name.trim().toLowerCase() == startingPoint)) {
+          uniqueTrips.add(trip);
         }
-
-        for (var trip in allTrips) {
-          if (!((trip.startStation.name.trim().toLowerCase() == startingPoint &&
-                      trip.destination.name.trim().toLowerCase() ==
-                          destination) ||
-                  (trip.startStation.name.trim().toLowerCase() == destination &&
-                      trip.destination.name.trim().toLowerCase() ==
-                          startingPoint)) &&
-              (trip.startStation.name.trim().toLowerCase() == startingPoint ||
-                  trip.destination.name.trim().toLowerCase() == destination ||
-                  trip.startStation.name.trim().toLowerCase() == destination ||
-                  trip.destination.name.trim().toLowerCase() ==
-                      startingPoint)) {
-            uniqueTrips.add(trip);
-          }
-        }
-        debugPrint("Trips received: ${uniqueTrips.length}");
-
-        debugPrint("Trips Fetched Successful => ${uniqueTrips.toList()}");
-        emit(
-          TripsFetchedState(
-            message: "Trips Fetched Successfuly",
-            trips: uniqueTrips.toList(),
-          ),
-        );
-      } else {
-        emit(TripsFailureState(error: 'An unexpected error occured'));
       }
-    } catch (error) {
-      emit(TripsFailureState(error: 'Error fetching trips: $error'));
-      debugPrint('Error fetching trips: $error');
+
+      for (var trip in allTrips) {
+        if (!((trip.startStation.name.trim().toLowerCase() == startingPoint &&
+                    trip.destination.name.trim().toLowerCase() ==
+                        destination) ||
+                (trip.startStation.name.trim().toLowerCase() == destination &&
+                    trip.destination.name.trim().toLowerCase() ==
+                        startingPoint)) &&
+            (trip.startStation.name.trim().toLowerCase() == startingPoint ||
+                trip.destination.name.trim().toLowerCase() == destination ||
+                trip.startStation.name.trim().toLowerCase() == destination ||
+                trip.destination.name.trim().toLowerCase() == startingPoint)) {
+          uniqueTrips.add(trip);
+        }
+      }
+
+      debugPrint("Trips Fetched: ${uniqueTrips.length}");
+      emit(TripsFetchedState(
+        message: "Trips Fetched Successfully",
+        trips: uniqueTrips.toList(),
+        nextUrl: nextUrl,
+      ));
+    } catch (e) {
+      emit(TripsFailureState(error: 'Error fetching trips: $e'));
     }
-    return null;
+  }
+
+  Future<void> loadMoreTrips(
+    LoadMoreTripsEvent event,
+    Emitter<TripsState> emit,
+  ) async {
+    if (event.nextUrl == null) return;
+
+    try {
+      emit(TripsLoadingMore()); // optional loading state while appending
+
+      final response = await tripService.fetchTripsApi(
+        null,
+        null,
+        url: event.nextUrl,
+      );
+
+      if (response != null) {
+        final allTrips = [...event.currentTrips, ...response.trips];
+
+        emit(TripsFetchedState(
+          message: "More Trips Loaded",
+          trips: allTrips,
+          nextUrl: response.nextUrl,
+        ));
+      } else {
+        emit(TripsFailureState(error: 'Failed to load more trips'));
+      }
+    } catch (e) {
+      emit(TripsFailureState(error: 'Error loading more trips: $e'));
+    }
   }
 }

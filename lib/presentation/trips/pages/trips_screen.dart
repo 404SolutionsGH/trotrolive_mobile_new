@@ -1,20 +1,76 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/helpers/animation/showup_animation.dart';
-import 'package:trotrolive_mobile_new/helpers/widgets/cedi_widget.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/model/trips_model.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/dialogbox_util.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../bloc/trips_bloc.dart';
 
-class TripsPage extends StatelessWidget {
+class TripsPage extends StatefulWidget {
   TripsPage({super.key});
 
+  @override
+  State<TripsPage> createState() => _TripsPageState();
+}
+
+class _TripsPageState extends State<TripsPage>
+    with SingleTickerProviderStateMixin {
   List<TripsModel>? trips;
+  late ScrollController _scrollController;
+  bool _showMoreInfoButton = false;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+
+    // Trigger initial trip fetch
+    context.read<TripsBloc>().add(FetchTripEvent());
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _fadeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_fadeController);
+  }
+
+  void _onScroll() {
+    final bloc = context.read<TripsBloc>();
+    final state = bloc.state;
+
+    // Detect if user has scrolled to bottom and there's more to load
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 100 &&
+        state is TripsFetchedState &&
+        state.nextUrl != null &&
+        !_showMoreInfoButton) {
+      setState(() {
+        _showMoreInfoButton = true;
+      });
+      _fadeController.forward();
+    } else if (_scrollController.position.pixels <
+            _scrollController.position.maxScrollExtent - 100 &&
+        _showMoreInfoButton) {
+      setState(() {
+        _showMoreInfoButton = false;
+      });
+      _fadeController.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +99,14 @@ class TripsPage extends StatelessWidget {
       },
       builder: (BuildContext context, state) {
         if (state is TripsFetchedState) {
-          trips = state.trips;
+          final trips = state.trips!;
+          final hasMore = state.hasMore;
           return Scaffold(
             backgroundColor: primaryColor,
             appBar: AppBar(
-              shadowColor: primaryContainerShade,
-              elevation: 0.1,
-              surfaceTintColor: whiteColor,
+              //shadowColor: primaryContainerShade,
+              //elevation: 0.1,
+              // surfaceTintColor: whiteColor,
               backgroundColor: primaryColor,
               automaticallyImplyLeading: false,
               centerTitle: true,
@@ -68,7 +125,7 @@ class TripsPage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
+                    topLeft: Radius.circular(25),
                   ),
                   color: whiteColor,
                 ),
@@ -161,10 +218,56 @@ class TripsPage extends StatelessWidget {
                       SizedBox(
                         height: MediaQuery.of(context).size.height,
                         child: ListView.builder(
-                          itemCount: trips?.length,
+                          controller: _scrollController,
                           scrollDirection: Axis.vertical,
-                          itemBuilder: (BuildContext context, index) {
-                            final trip = trips?[index];
+                          itemCount: trips.length + (hasMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == trips.length) {
+                              return state.nextUrl != null &&
+                                      _showMoreInfoButton
+                                  ? FadeTransition(
+                                      opacity: _fadeAnimation,
+                                      child: Center(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            context.read<TripsBloc>().add(
+                                                  LoadMoreTripsEvent(
+                                                    nextUrl: state.nextUrl!,
+                                                    currentTrips:
+                                                        state.trips ?? [],
+                                                  ),
+                                                );
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(35),
+                                              // border: Border.all(
+                                              //     color: primaryColorDeep),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'Load more',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                      color: primaryColorDeep,
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox.shrink();
+                            }
+                            final trip = trips[index];
                             return Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Column(
@@ -469,34 +572,12 @@ class TripsPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: secondaryBg,
           body: Center(
-            child: CircularProgressIndicator(
+            child: SpinKitWave(
               color: primaryColor,
-              strokeWidth: 3,
+              size: 20,
             ),
           ),
         );
-        // return Scaffold(
-        //   backgroundColor: secondaryBg,
-        //   body: Center(
-        //     child: Column(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       children: [
-        //         Icon(
-        //           MingCute.information_line,
-        //           size: 80,
-        //           color: iconGrey,
-        //         ),
-        //         SizedBox(height: 20),
-        //         subheadingTextMedium(
-        //           context,
-        //           "Error Fetching Trips !!",
-        //           16,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // );
       },
     );
   }
