@@ -3,7 +3,6 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../utils/constants/api constants/api_constants.dart';
 
 class DioHelper {
@@ -23,15 +22,13 @@ class DioHelper {
       ),
     );
 
-    // Cookie manager for CSRF token handling
     cookieJar = CookieJar();
     dio.interceptors.add(CookieManager(cookieJar));
 
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          // Add CSRF token from cookies to the header
-          final uri = Uri.parse(baseUrl);
+        onRequest: (options, handler) async {         
+           final uri = Uri.parse(baseUrl);
           final cookies = await cookieJar.loadForRequest(uri);
           final csrfCookie = cookies.firstWhere(
             (c) => c.name.toLowerCase() == 'csrftoken',
