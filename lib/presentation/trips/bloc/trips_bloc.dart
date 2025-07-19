@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trotrolive_mobile_new/presentation/location/bloc/location_bloc.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/data/trips_api_service.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/model/trips_model.dart';
 part 'trips_event.dart';
@@ -8,37 +7,12 @@ part 'trips_state.dart';
 
 class TripsBloc extends Bloc<TripsEvent, TripsState> {
   final tripService = TripsRemoteApiService();
-  final LocationBloc locationbloc;
+  //final LocationBloc locationbloc;
   bool isLoadingMore = false;
 
-  TripsBloc(this.locationbloc) : super(TripsInitial()) {
+  TripsBloc() : super(TripsInitial()) {
     on<FetchTripEvent>(fetchTrips);
-    on<LoadMoreTripsEvent>((event, emit) async {
-      if (isLoadingMore) return;
-      isLoadingMore = true;
-      emit(TripsLoadingMore());
-
-      try {
-        final response = await tripService.fetchTripsApi(
-          null,
-          null,
-          url: event.nextUrl,
-        );
-
-        if (response != null) {
-          final allTrips = [...event.currentTrips, ...response.trips];
-          emit(TripsFetchedState(
-            message: "Trips Loaded",
-            trips: allTrips,
-            nextUrl: response.nextUrl,
-          ));
-        }
-      } catch (e) {
-        emit(TripsFailureState(error: 'Error loading more trips: $e'));
-      } finally {
-        isLoadingMore = false;
-      }
-    });
+    on<LoadMoreTripsEvent>(loadMoreTrips);
   }
 
   Future<void> fetchTrips(
@@ -47,8 +21,8 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
       emit(TripsLoading());
       debugPrint("Trips Loading...");
 
-      final String? startingPoint = "Terminal Abeka lapaz".trim().toLowerCase();
-      final String? destination = "Terminal Kasoa Station".trim().toLowerCase();
+      final String startingPoint = event.startingPoint!.trim().toLowerCase();
+      final String destination = event.destination!.trim().toLowerCase();
 
       List<TripsModel> allTrips = [];
       String? nextUrl;
@@ -112,11 +86,11 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     LoadMoreTripsEvent event,
     Emitter<TripsState> emit,
   ) async {
-    if (event.nextUrl == null) return;
+    if (isLoadingMore) return;
+    isLoadingMore = true;
+    emit(TripsLoadingMore());
 
     try {
-      emit(TripsLoadingMore()); // optional loading state while appending
-
       final response = await tripService.fetchTripsApi(
         null,
         null,
@@ -125,17 +99,16 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
 
       if (response != null) {
         final allTrips = [...event.currentTrips, ...response.trips];
-
         emit(TripsFetchedState(
-          message: "More Trips Loaded",
+          message: "Trips Loaded",
           trips: allTrips,
           nextUrl: response.nextUrl,
         ));
-      } else {
-        emit(TripsFailureState(error: 'Failed to load more trips'));
       }
     } catch (e) {
       emit(TripsFailureState(error: 'Error loading more trips: $e'));
+    } finally {
+      isLoadingMore = false;
     }
   }
 }

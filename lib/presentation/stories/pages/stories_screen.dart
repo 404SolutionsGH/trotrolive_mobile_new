@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/utils/constants/color%20constants/colors.dart';
+
 import '../../../helpers/text_widgets.dart';
 
 class StoriesPage extends StatelessWidget {
@@ -20,139 +20,59 @@ class StoriesPage extends StatelessWidget {
               begin: Alignment.center,
               end: Alignment.bottomCenter,
               colors: [
-                primaryColor.withOpacity(0.93),
+                primaryColor.withOpacity(0.95),
                 primaryColorDeep,
               ],
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: Stack(
             children: [
-              AppBar(
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.transparent,
-                actions: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/notification');
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: blackColorShade,
-                      child: Center(
-                        child: Badge(
-                          child: Icon(
-                            MingCute.notification_line,
-                            size: 21,
-                            color: whiteColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                ],
-                title: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: blackColorShade,
-                      child: Center(
-                        child: Icon(
-                          MingCute.location_line,
-                          color: whiteColor,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        subheadingText(
-                          context,
-                          'Location',
-                          TextAlign.start,
-                          12,
-                          2,
-                          secondaryColor,
-                        ),
-                        appbarText(
-                            context, 'Weija-Gbawe Accra', whiteColor, 12),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                height: 120,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+              Positioned(
+                bottom: 20,
+                top: 20,
+                right: 20,
+                left: 20,
+                child: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       headingTextMedium(
-                          context,
-                          "Where are you going this weekend?",
-                          FontWeight.w500,
-                          18,
-                          whiteColor),
-                      SizedBox(height: 15),
-                      TextFormField(
-                        //controller: searchController,
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontSize: 15,
-                              color: whiteColor,
-                              fontWeight: FontWeight.w500,
-                            ),
-                        onChanged: (value) => (),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Type something';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: "Search here....",
-                          hintStyle: const TextStyle(
-                              color: secondaryColor, fontSize: 13),
-                          prefixIcon: const Icon(
-                            MingCute.search_2_line,
-                            color: secondaryColor,
-                            size: 23,
-                          ),
-                          suffixIcon: GestureDetector(
-                            onTap: () {
-                              // scrollBottomSheet(context);
-                            },
-                            child: Container(
-                              width: 65,
-                              decoration: BoxDecoration(
-                                color: secondaryColor,
-                                borderRadius: BorderRadius.circular(60),
-                              ),
-                              child: Icon(
-                                MingCute.list_search_fill,
-                                color: blackColor,
-                                size: 19,
-                              ),
-                            ),
-                          ),
-                          filled: true,
-                          isDense: true,
-                          fillColor: blackColorShade,
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
-                            borderSide: BorderSide.none,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
+                        context,
+                        "Trotro Stories",
+                        FontWeight.bold,
+                        20,
+                        whiteColor,
+                      ),
+                      SizedBox(height: 2),
+                      subheadingText(
+                        context,
+                        'Just have fun with it!!',
+                        size: 10,
+                        color: secondaryColor4,
                       ),
                     ],
                   ),
+                ),
+              ),
+              Positioned(
+                bottom: 5,
+                top: -180,
+                right: -50,
+                child: Icon(
+                  Icons.circle_outlined,
+                  size: 200,
+                  color: whiteColor.withOpacity(0.05),
+                ),
+              ),
+              Positioned(
+                bottom: -190,
+                top: 5,
+                left: -50,
+                child: Icon(
+                  Icons.circle_outlined,
+                  size: 280,
+                  color: whiteColor.withOpacity(0.05),
                 ),
               ),
             ],

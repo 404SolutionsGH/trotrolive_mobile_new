@@ -26,17 +26,19 @@ class StationModel {
   });
 
   factory StationModel.fromJson(Map<String, dynamic> json) => StationModel(
-        id: json['id'] as String? ?? '',
-        name: json['name'] as String? ?? '',
-        stationModelAddress: json['stationModel_address'] as String?,
-        coordinates: List<double>.from(
-            json['coordinates'].map((x) => x?.toDouble() ?? 0.0)),
-        image: json['image'] as String?,
-        isBusStop: json['is_bus_stop'] as bool? ?? false,
-        city: json['city'] as int? ?? 0,
-        createdAt: DateTime.parse(json['created_at'] as String? ?? ''),
-        updatedAt: DateTime.parse(json['updated_at'] as String? ?? ''),
-        clickCount: json['clickCount'] as int? ?? 0,
+        id: json['id'].toString(),
+        name: json['name'] ?? '',
+        stationModelAddress: json['station_address'] ?? '',
+        coordinates: [
+          double.tryParse(json['station_latitude'] ?? '0') ?? 0.0,
+          double.tryParse(json['station_longitude'] ?? '0') ?? 0.0,
+        ],
+        image: json['image_url'],
+        isBusStop: json['is_bus_stop'] ?? false,
+        city: 0, // Not in JSON
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        clickCount: 0,
       );
 
   factory StationModel.fromFirestore(Map<String, dynamic> data) {

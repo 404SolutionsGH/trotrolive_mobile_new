@@ -1,16 +1,24 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/helpers/animation/showup_animation.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/model/trips_model.dart';
+
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/dialogbox_util.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../bloc/trips_bloc.dart';
 
 class TripsPage extends StatefulWidget {
-  TripsPage({super.key});
+  final String? startLocation;
+  final String? destination;
+  const TripsPage({
+    Key? key,
+    this.startLocation,
+    this.destination,
+  }) : super(key: key);
 
   @override
   State<TripsPage> createState() => _TripsPageState();
@@ -202,7 +210,7 @@ class _TripsPageState extends State<TripsPage>
                                   children: [
                                     headingTextMedium(
                                       context,
-                                      'Found ${trips?.length} Trips',
+                                      'Found ${trips.length} Trips',
                                       FontWeight.w600,
                                       12,
                                       Colors.green,
@@ -387,7 +395,7 @@ class _TripsPageState extends State<TripsPage>
                                                     children: [
                                                       headingTextMedium(
                                                         context,
-                                                        trip?.startStation.name
+                                                        trip.startStation.name
                                                                 .toString() ??
                                                             '',
                                                         FontWeight.w600,
@@ -395,18 +403,18 @@ class _TripsPageState extends State<TripsPage>
                                                       ),
                                                       subheadingText(
                                                         context,
-                                                        trip?.startStation
+                                                        trip.startStation
                                                                     .isBusStop ==
                                                                 true
                                                             ? 'Bus Stop'
                                                             : 'Not Bus Stop',
-                                                        TextAlign.start,
-                                                        10,
+                                                        align: TextAlign.start,
+                                                        size: 10,
                                                       ),
                                                       SizedBox(height: 20),
                                                       headingTextMedium(
                                                         context,
-                                                        trip?.destination.name
+                                                        trip.destination.name
                                                                 .toString() ??
                                                             '',
                                                         FontWeight.w600,
@@ -416,13 +424,14 @@ class _TripsPageState extends State<TripsPage>
                                                         children: [
                                                           subheadingText(
                                                             context,
-                                                            trip?.destination
+                                                            trip.destination
                                                                         .isBusStop ==
                                                                     true
                                                                 ? 'Bus Stop'
                                                                 : 'Not Bus Stop',
-                                                            TextAlign.start,
-                                                            10,
+                                                            align:
+                                                                TextAlign.start,
+                                                            size: 10,
                                                           ),
                                                         ],
                                                       ),
@@ -515,18 +524,18 @@ class _TripsPageState extends State<TripsPage>
                                                   subheadingText(
                                                     context,
                                                     'Transport Type: ',
-                                                    TextAlign.start,
-                                                    12,
-                                                    1,
-                                                    whiteColor,
+                                                    align: TextAlign.start,
+                                                    size: 12,
+                                                    maxlines: 1,
+                                                    color: whiteColor,
                                                   ),
                                                   subheadingText(
                                                     context,
                                                     'Trotro',
-                                                    TextAlign.start,
-                                                    12,
-                                                    2,
-                                                    secondaryColor3,
+                                                    align: TextAlign.start,
+                                                    size: 12,
+                                                    maxlines: 2,
+                                                    color: secondaryColor3,
                                                   ),
                                                 ],
                                               ),
@@ -542,11 +551,11 @@ class _TripsPageState extends State<TripsPage>
                                                   SizedBox(width: 3),
                                                   subheadingText(
                                                     context,
-                                                    trip?.route.source ?? '',
-                                                    TextAlign.start,
-                                                    11,
-                                                    1,
-                                                    secondaryColor3,
+                                                    trip.route.source ?? '',
+                                                    align: TextAlign.start,
+                                                    size: 11,
+                                                    maxlines: 1,
+                                                    color: secondaryColor3,
                                                   ),
                                                 ],
                                               ),
