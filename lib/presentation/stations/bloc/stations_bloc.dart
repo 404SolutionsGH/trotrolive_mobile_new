@@ -55,6 +55,8 @@ class StationBloc extends Bloc<StationEvent, StationState> {
         } else {
           debugPrint('User location is not available.');
         }
+      } else if (locationState is LocationFailure) {
+        emit(StationFailureState(error: 'Your location couldnt load'));
       }
     } catch (error) {
       debugPrint(error.toString());

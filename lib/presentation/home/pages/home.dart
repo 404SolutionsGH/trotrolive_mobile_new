@@ -45,30 +45,29 @@ class _MyHomePageState extends State<MyHomePage>
 
   late final StreamSubscription _locationSubscription;
 
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    final locationBloc = context.read<LocationBloc>();
-    locationBloc.add(LoadLocationEvent());
+  //   final locationBloc = context.read<LocationBloc>();
+  //   locationBloc.add(LoadLocationEvent());
 
-    _locationSubscription = locationBloc.stream.listen((state) {
-      if (state is LocationFetchedState) {
-        context.read<StationBloc>().add(FetchStationEvent());
-      }
-    });
-  }
+  //   _locationSubscription = locationBloc.stream.listen((state) {
+  //     if (state is LocationFetchedState) {
+  //       context.read<StationBloc>().add(FetchStationEvent());
+  //     }
+  //   });
+  // }
 
-  @override
-  void dispose() {
-    _locationSubscription.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _locationSubscription.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final locationState = context.watch<LocationBloc>().state;
     return BlocConsumer<StationBloc, StationState>(listener: (context, state) {
       if (state is StationLoading) {
         Scaffold(
@@ -89,44 +88,21 @@ class _MyHomePageState extends State<MyHomePage>
         );
       }
     }, builder: (context, state) {
-      if (locationState is LocationFailure) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(8),
-            content: Text(
-              'Check your device location or internet connection',
-              style: const TextStyle(),
-            ),
-            backgroundColor: blackColor,
-          ),
-        );
-
-        // Container(
-        //   color: secondaryBg,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(50.0),
-        //     child: Column(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: [
-        //         Icon(
-        //           Icons.location_off_rounded,
-        //           color: Colors.black26,
-        //           size: 80,
-        //         ),
-        //         SizedBox(height: 18),
-        //         headingTextMedium2(
-        //             context,
-        //             "Turn on your device's location service or wait for app to fetch device location",
-        //             FontWeight.w500,
-        //             13),
-        //         SizedBox(height: 8),
-        //       ],
-        //     ),
-        //   ),
-        // );
-      }
-
+      //   if (locationState is LocationFailure) {
+      //     WidgetsBinding.instance.addPostFrameCallback((_) {
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         SnackBar(
+      //           behavior: SnackBarBehavior.floating,
+      //           margin: const EdgeInsets.all(8),
+      //           content: Text(
+      //             'Check your device location or internet connection',
+      //             style: const TextStyle(),
+      //           ),
+      //           backgroundColor: blackColor,
+      //         ),
+      //       );
+      //     });
+      //  }
       if (state is StationFailureState) {
         isMessage = true;
         debugPrint("Fetch Failed");

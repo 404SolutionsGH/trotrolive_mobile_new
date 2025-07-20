@@ -34,7 +34,7 @@ class StoriesPage extends StatelessWidget {
                 child: Icon(
                   Icons.circle_outlined,
                   size: 200,
-                  color: whiteColor.withOpacity(0.05),
+                  color: Color.fromRGBO(255, 255, 255, 0.05),
                 ),
               ),
               Positioned(

@@ -24,7 +24,9 @@ class TrotroAppBlocs extends StatelessWidget {
           create: (context) => TripsBloc()..add(FetchTripEvent()),
         ),
       ],
-      child: TrotroApp(),
+      child: BlocProvider(
+          create: (context) => LocationBloc()..add(LoadLocationEvent()),
+          child: TrotroApp()),
     );
   }
 }

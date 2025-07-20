@@ -39,8 +39,10 @@ class _TripsPageState extends State<TripsPage>
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
 
-    // Trigger initial trip fetch
-    context.read<TripsBloc>().add(FetchTripEvent());
+    context.read<TripsBloc>().add(FetchTripEvent(
+          startingPoint: widget.startLocation,
+          destination: widget.destination,
+        ));
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
