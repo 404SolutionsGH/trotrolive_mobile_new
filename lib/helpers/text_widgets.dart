@@ -46,6 +46,23 @@ headingTextMedium(context, String text,
   );
 }
 
+headingTextMedium2(context, String text,
+    [FontWeight? weight, double? size, Color? color]) {
+  return Text(
+    textAlign: TextAlign.center,
+    overflow: TextOverflow.visible,
+    softWrap: true,
+    maxLines: 4,
+    text,
+    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+          color: color ?? blackColor,
+          fontWeight: weight ?? FontWeight.bold,
+          fontSize: size ?? 19,
+          letterSpacing: 2,
+        ),
+  );
+}
+
 headingTextSmall(context, String text) {
   return Text(
     textAlign: TextAlign.center,

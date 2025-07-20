@@ -136,8 +136,7 @@ class _StationsPageState extends State<StationsPage>
             );
           }
 
-          stations!
-              .sort((a, b) => a.distanceToUser.compareTo(b.distanceToUser));
+          stations.sort((a, b) => a.distanceToUser.compareTo(b.distanceToUser));
 
           return SizedBox(
             height: 350,

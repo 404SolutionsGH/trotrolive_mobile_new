@@ -69,12 +69,6 @@ class _SplashScreenState extends State<SplashScreen>
       body: SafeArea(
         child: Stack(
           children: [
-            // Image.asset(
-            //   bgwhiteImg,
-            //   height: MediaQuery.of(context).size.height,
-            //   width: MediaQuery.of(context).size.width,
-            //   fit: BoxFit.cover,
-            // ),
             Positioned(
               child: Center(
                 child: Column(
@@ -83,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
                     SlideTransition(
                       position: _slideAnimation,
                       child: Image.asset(
-                        logo,
+                        appIcon,
                         height: 130,
                         width: 130,
                       ),

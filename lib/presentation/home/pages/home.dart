@@ -70,31 +70,6 @@ class _MyHomePageState extends State<MyHomePage>
     super.build(context);
     final locationState = context.watch<LocationBloc>().state;
     return BlocConsumer<StationBloc, StationState>(listener: (context, state) {
-      // if (state is StationFailureState) {
-      //   // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   //   showDialog(
-      //   //     barrierDismissible: false,
-      //   //     context: context,
-      //   //     builder: (BuildContext context) {
-      //   //       return DialogBoxUtil(
-      //   //         context,
-      //   //         onTap: () {
-      //   //           Navigator.pop(context);
-      //   //         },
-      //   //         icon: MingCute.warning_line,
-      //   //         content: state.error,
-      //   //         leftText: '',
-      //   //         rightText: 'Exit',
-      //   //         oncancel: () {
-      //   //           Navigator.pop(context);
-      //   //         },
-      //   //       );
-      //   //     },
-      //   //   );
-      //   // });
-
-      //   Text(state.error);
-      // }
       if (state is StationLoading) {
         Scaffold(
           backgroundColor: secondaryBg,
@@ -115,54 +90,79 @@ class _MyHomePageState extends State<MyHomePage>
       }
     }, builder: (context, state) {
       if (locationState is LocationFailure) {
-        return Container(
-          color: secondaryBg,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.location_off_rounded,
-                  color: Colors.black26,
-                  size: 80,
-                ),
-                SizedBox(height: 18),
-                headingTextMedium(
-                    context,
-                    "Turn on your device's location service or wait for app to fetch device location to access nearby shops.",
-                    FontWeight.w600,
-                    14),
-                SizedBox(height: 8),
-              ],
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(8),
+            content: Text(
+              'Check your device location or internet connection',
+              style: const TextStyle(),
             ),
+            backgroundColor: blackColor,
           ),
         );
+
+        // Container(
+        //   color: secondaryBg,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(50.0),
+        //     child: Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Icon(
+        //           Icons.location_off_rounded,
+        //           color: Colors.black26,
+        //           size: 80,
+        //         ),
+        //         SizedBox(height: 18),
+        //         headingTextMedium2(
+        //             context,
+        //             "Turn on your device's location service or wait for app to fetch device location",
+        //             FontWeight.w500,
+        //             13),
+        //         SizedBox(height: 8),
+        //       ],
+        //     ),
+        //   ),
+        // );
       }
 
       if (state is StationFailureState) {
         isMessage = true;
         debugPrint("Fetch Failed");
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return DialogBoxUtil(
-                context,
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                icon: MingCute.warning_line,
-                content: state.error,
-                leftText: '',
-                rightText: 'Exit',
-                oncancel: () {
-                  Navigator.pop(context);
-                },
-              );
-            },
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              elevation: 0.5,
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(8),
+              content: Text(
+                state.error,
+                style: const TextStyle(),
+              ),
+              backgroundColor: blackColor,
+            ),
           );
+
+          // showDialog(
+          //   barrierDismissible: false,
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return DialogBoxUtil(
+          //       context,
+          //       onTap: () {
+          //         Navigator.pop(context);
+          //       },
+          //       icon: MingCute.warning_line,
+          //       content: state.error,
+          //       leftText: '',
+          //       rightText: 'Exit',
+          //       oncancel: () {
+          //         Navigator.pop(context);
+          //       },
+          //     );
+          //   },
+          // );
         });
       }
 
@@ -282,7 +282,12 @@ class _MyHomePageState extends State<MyHomePage>
                                             12,
                                           );
                                         }
-                                        return SizedBox.shrink();
+                                        return appbarText(
+                                          context,
+                                          'Getting your location....',
+                                          whiteColor,
+                                          12,
+                                        );
                                       },
                                     ),
                                   ],
@@ -1123,33 +1128,6 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
-//   GestureDetector _stationsBuild(
-//       BuildContext context, List<StationModel>? station, int index) {
-//     // if (station == null) {
-//     //   Center(
-//     //     child: Column(
-//     //       mainAxisAlignment: MainAxisAlignment.center,
-//     //       children: [
-//     //         // Image.asset(
-//     //         //   "assets/images/bg19.png",
-//     //         //   height: 45,
-//     //         //   width: 45,
-//     //         //   color: Colors.grey,
-//     //         // ),
-//     //         const SizedBox(height: 8),
-//     //         const Text(
-//     //           "No nearby stations found !!",
-//     //           style: TextStyle(
-//     //             color: Colors.grey,
-//     //             fontSize: 12,
-//     //           ),
-//     //         ),
-//     //       ],
-//     //     ),
-//     //   );
-//     // }
-//  }
-
   Widget _dotIcon(Color color, IconData icon) {
     return Container(
       height: 22,
@@ -1182,7 +1160,7 @@ class _MyHomePageState extends State<MyHomePage>
     String destination = '';
 
     String errorMessage = 'Please enter destination !!';
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     return showModalBottomSheet(
       showDragHandle: true,
       backgroundColor: Colors.white,
@@ -1199,7 +1177,7 @@ class _MyHomePageState extends State<MyHomePage>
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Form(
-              key: _formKey,
+              key: formKey,
               child: Column(
                 children: [
                   Padding(
@@ -1310,8 +1288,8 @@ class _MyHomePageState extends State<MyHomePage>
                     padding: const EdgeInsets.all(9.0),
                     child: GestureDetector(
                       onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
+                        if (formKey.currentState!.validate()) {
+                          formKey.currentState!.save();
                           // Get.to(() => SearchPage(
                           //     textFieldValue1: textFieldValue1,
                           //     textFieldValue2: textFieldValue2));

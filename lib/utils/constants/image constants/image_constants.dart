@@ -19,3 +19,4 @@ const String trackorder2Img = 'assets/images/track_order_502px.png';
 const String transportImg =
     'assets/images/Transportation-in-Ghana4-1024x768.jpeg';
 const String route2Img = 'assets/images/waypoint_50px.png';
+const String appIcon = 'assets/images/logo_s.png';

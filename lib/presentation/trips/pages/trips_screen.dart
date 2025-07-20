@@ -15,10 +15,10 @@ class TripsPage extends StatefulWidget {
   final String? startLocation;
   final String? destination;
   const TripsPage({
-    Key? key,
+    super.key,
     this.startLocation,
     this.destination,
-  }) : super(key: key);
+  });
 
   @override
   State<TripsPage> createState() => _TripsPageState();

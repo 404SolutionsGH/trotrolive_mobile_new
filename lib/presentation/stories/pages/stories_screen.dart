@@ -28,6 +28,26 @@ class StoriesPage extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
+                bottom: 5,
+                top: -180,
+                right: -50,
+                child: Icon(
+                  Icons.circle_outlined,
+                  size: 200,
+                  color: whiteColor.withOpacity(0.05),
+                ),
+              ),
+              Positioned(
+                bottom: -190,
+                top: 5,
+                left: -50,
+                child: Icon(
+                  Icons.circle_outlined,
+                  size: 280,
+                  color: whiteColor.withOpacity(0.05),
+                ),
+              ),
+              Positioned(
                 bottom: 20,
                 top: 20,
                 right: 20,
@@ -53,26 +73,6 @@ class StoriesPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-              ),
-              Positioned(
-                bottom: 5,
-                top: -180,
-                right: -50,
-                child: Icon(
-                  Icons.circle_outlined,
-                  size: 200,
-                  color: whiteColor.withOpacity(0.05),
-                ),
-              ),
-              Positioned(
-                bottom: -190,
-                top: 5,
-                left: -50,
-                child: Icon(
-                  Icons.circle_outlined,
-                  size: 280,
-                  color: whiteColor.withOpacity(0.05),
                 ),
               ),
             ],
