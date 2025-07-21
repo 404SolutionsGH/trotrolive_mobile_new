@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/helpers/widgets/custom_button.dart';
+import '../../../helpers/text_widgets.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../../../utils/constants/image constants/image_constants.dart';
 
@@ -103,8 +104,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               style: TextStyle(fontSize: 15),
                               children: [
                                 TextSpan(
-                                  text:
-                                      "By creating an account you agree to our ",
+                                  text: "By proceeding you agree to our ",
                                 ),
                                 TextSpan(
                                   style: TextStyle(color: secondaryColor),
@@ -135,7 +135,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Column(
                   children: [
                     CustomButton(
-                      text: 'Register',
+                      text: 'Create Account',
                       onpressed: () {
                         _displayBottomSheet(context);
                       },
@@ -144,7 +144,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                     const SizedBox(height: 13),
                     CustomButton(
-                      text: 'Login',
+                      text: 'Proceed',
                       onpressed: () {
                         Navigator.pushNamed(context, '/mainhome');
                       },
@@ -167,102 +167,230 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(5.0),
+          top: Radius.circular(25.0),
         ),
       ),
       isScrollControlled: true,
       context: context,
       builder: (context) => SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(20.0),
           child: SizedBox(
             child: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Column(
                 children: [
-                  const Text(
-                    "CREATE ACCOUNT",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      headingTextMedium(
+                        context,
+                        'Create Account',
+                        FontWeight.w600,
+                        20,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 5),
                   Center(
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      "Enter your phone number to continue, we will send you an OTP to verify.",
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                      ),
+                    child: subheadingTextMediumIntro(
+                      context,
+                      'Enter your details to create an account, Access to trips and stations info requires authentication',
+                      14,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      // Form(
-                      //   key: formKey,
-                      //   child: InternationalPhoneNumberInput(
-                      //     betweenPadding: 5,
-                      //     controller: controller.phone,
-                      //     validator: (value) {
-                      //       if (value.rawFullNumber.isEmpty) {
-                      //         return errorMessage;
-                      //       }
-                      //       //||
-                      //       return null;
-                      //     },
-                      //     initCountry: CountryCodeModel(
-                      //       name: 'Ghana',
-                      //       dial_code: '+233',
-                      //       code: 'GH',
-                      //     ),
-                      //     onInputChanged: (value) {},
-                      //     phoneConfig: PhoneConfig(
-                      //       textInputAction: TextInputAction.done,
-                      //       borderWidth: 0.5,
-                      //       textStyle: const TextStyle(
-                      //         color: Colors.black,
-                      //         letterSpacing: 4,
-                      //         //fontWeight: FontWeight.bold,
-                      //       ),
-                      //       popUpErrorText: true,
-                      //       errorColor: Colors.red,
-                      //       autovalidateMode: AutovalidateMode.always,
-                      //       enabledColor: Colors.black,
-                      //       focusedColor: Colors.black,
-                      //       showCursor: true,
-                      //     ),
-                      //     countryConfig: CountryConfig(
-                      //       flatFlag: true,
-                      //       flagSize: 20,
-                      //       textStyle: const TextStyle(
-                      //         color: Colors.black,
-                      //         letterSpacing: 4,
-                      //         //fontWeight: FontWeight.bold,
-                      //       ),
-                      //       decoration: BoxDecoration(
-                      //         border: Border.all(
-                      //           width: 0.5,
-                      //           color: Colors.black,
-                      //         ),
-                      //         borderRadius: BorderRadius.circular(5),
-                      //         //color: Colors.white,
-                      //       ),
-                      //     ),
-                      //     dialogConfig: DialogConfig(
-                      //       selectedItemColor: kSecondaryColor,
-                      //       topBarColor: kPrimaryColor,
-                      //       searchBoxBackgroundColor: kPrimaryColor,
-                      //       backgroundColor: Colors.white,
-                      //       textStyle: const TextStyle(color: Colors.black),
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
+                  Form(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          //  controller: destinationController,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontSize: 15,
+                                    color: blackColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                          //onChanged: (value) => (),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Username';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            //destination = value!.trim();
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Username",
+                            hintStyle: TextStyle(
+                                color: iconGrey.withOpacity(0.7), fontSize: 13),
+                            prefixIcon: const Icon(
+                              MingCute.user_2_line,
+                              color: iconGrey,
+                              size: 22,
+                            ),
+                            filled: true,
+                            isDense: true,
+                            fillColor: whiteColor,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: outlineGrey),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 13),
+                        TextFormField(
+                          //  controller: destinationController,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontSize: 15,
+                                    color: blackColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                          //onChanged: (value) => (),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Email';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            //destination = value!.trim();
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Email",
+                            hintStyle: TextStyle(
+                                color: iconGrey.withOpacity(0.7), fontSize: 13),
+                            prefixIcon: const Icon(
+                              MingCute.mail_line,
+                              color: iconGrey,
+                              size: 22,
+                            ),
+                            filled: true,
+                            isDense: true,
+                            fillColor: whiteColor,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: outlineGrey),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 13),
+                        TextFormField(
+                          obscureText: true,
+                          //  controller: destinationController,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontSize: 15,
+                                    color: blackColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                          //onChanged: (value) => (),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Password';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            //destination = value!.trim();
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            hintStyle: TextStyle(
+                                color: iconGrey.withOpacity(0.7), fontSize: 13),
+                            prefixIcon: const Icon(
+                              MingCute.lock_line,
+                              color: iconGrey,
+                              size: 22,
+                            ),
+                            filled: true,
+                            isDense: true,
+                            fillColor: whiteColor,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: outlineGrey),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+
+                        // Form(
+                        //   key: formKey,
+                        //   child: InternationalPhoneNumberInput(
+                        //     betweenPadding: 5,
+                        //     controller: controller.phone,
+                        //     validator: (value) {
+                        //       if (value.rawFullNumber.isEmpty) {
+                        //         return errorMessage;
+                        //       }
+                        //       //||
+                        //       return null;
+                        //     },
+                        //     initCountry: CountryCodeModel(
+                        //       name: 'Ghana',
+                        //       dial_code: '+233',
+                        //       code: 'GH',
+                        //     ),
+                        //     onInputChanged: (value) {},
+                        //     phoneConfig: PhoneConfig(
+                        //       textInputAction: TextInputAction.done,
+                        //       borderWidth: 0.5,
+                        //       textStyle: const TextStyle(
+                        //         color: Colors.black,
+                        //         letterSpacing: 4,
+                        //         //fontWeight: FontWeight.bold,
+                        //       ),
+                        //       popUpErrorText: true,
+                        //       errorColor: Colors.red,
+                        //       autovalidateMode: AutovalidateMode.always,
+                        //       enabledColor: Colors.black,
+                        //       focusedColor: Colors.black,
+                        //       showCursor: true,
+                        //     ),
+                        //     countryConfig: CountryConfig(
+                        //       flatFlag: true,
+                        //       flagSize: 20,
+                        //       textStyle: const TextStyle(
+                        //         color: Colors.black,
+                        //         letterSpacing: 4,
+                        //         //fontWeight: FontWeight.bold,
+                        //       ),
+                        //       decoration: BoxDecoration(
+                        //         border: Border.all(
+                        //           width: 0.5,
+                        //           color: Colors.black,
+                        //         ),
+                        //         borderRadius: BorderRadius.circular(5),
+                        //         //color: Colors.white,
+                        //       ),
+                        //     ),
+                        //     dialogConfig: DialogConfig(
+                        //       selectedItemColor: kSecondaryColor,
+                        //       topBarColor: kPrimaryColor,
+                        //       searchBoxBackgroundColor: kPrimaryColor,
+                        //       backgroundColor: Colors.white,
+                        //       textStyle: const TextStyle(color: Colors.black),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 30),
                   GestureDetector(
                     onTap: () {
                       /*setState(() {
@@ -279,17 +407,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       height: 50,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(50),
                         color: primaryColor,
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           "Continue",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                     ),
@@ -315,7 +444,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           height: 50,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(50),
                             border: Border.all(color: Colors.grey.shade400),
                           ),
                           child: Row(

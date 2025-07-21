@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/presentation/stations/repository/model/stations_model.dart';
+import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/cedi_widget.dart';
 import '../../../helpers/widgets/dialogbox_util.dart';
@@ -12,6 +13,7 @@ import '../../../utils/constants/color constants/colors.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../../stations/bloc/stations_bloc.dart';
 import '../../stations/pages/stations_page.dart';
+import '../../trips/components/trips_page_arguments.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -42,7 +44,9 @@ class _MyHomePageState extends State<MyHomePage>
   bool isMessage = false;
   bool showPopup = false;
   String? startPoint;
+  String destination = '';
 
+  final destinationController = TextEditingController();
   late final StreamSubscription _locationSubscription;
 
   // @override
@@ -141,7 +145,6 @@ class _MyHomePageState extends State<MyHomePage>
           // );
         });
       }
-
       return Stack(
         children: [
           Scaffold(
@@ -315,7 +318,9 @@ class _MyHomePageState extends State<MyHomePage>
                                       ),
                                       suffixIcon: GestureDetector(
                                         onTap: () {
-                                          // scrollBottomSheet(context);
+                                          setState(() {
+                                            showPopup = true;
+                                          });
                                         },
                                         child: Container(
                                           width: 65,
@@ -375,69 +380,75 @@ class _MyHomePageState extends State<MyHomePage>
                         labelseeAllText(context, 'See All'),
                       ],
                     ),
-                    Container(
-                      height: 145,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: whiteColor,
-                        border: Border.all(
-                            width: 2.5, color: primaryContainerShade),
-                        borderRadius: BorderRadius.circular(17),
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 140,
-                            width: 175,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  headingTextMedium(context, 'Free offers',
-                                      FontWeight.w600, 14),
-                                  SizedBox(height: 8),
-                                  subheadingTextMedium(
-                                    context,
-                                    'Enjoy exclusive discount on all routes today.',
-                                    12,
-                                  ),
-                                  SizedBox(height: 15),
-                                  Container(
-                                    height: 35,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(40),
-                                    ),
-                                    child: Center(
-                                      child: labelTextRegular(
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        height: 155,
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          border: Border.all(
+                              width: 2.5, color: primaryContainerShade),
+                          borderRadius: BorderRadius.circular(17),
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              height: 150,
+                              width: 175,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    headingTextMedium(
                                         context,
-                                        'View more',
-                                        whiteColor,
-                                        11.5,
+                                        'Kaneshie Station Moments',
+                                        FontWeight.w600,
+                                        14),
+                                    SizedBox(height: 8),
+                                    subheadingTextMedium(
+                                      context,
+                                      'Vendors shouting, passengers rushing...',
+                                      12,
+                                    ),
+                                    SizedBox(height: 10),
+                                    Container(
+                                      height: 30,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(40),
+                                      ),
+                                      child: Center(
+                                        child: labelTextRegular(
+                                          context,
+                                          'View more',
+                                          whiteColor,
+                                          11.5,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            height: 150,
-                            width: 145,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: Image.asset(
-                                        "assets/images/feedbackImage.png")
-                                    .image,
+                            Container(
+                              height: 150,
+                              width: 145,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: Image.asset(
+                                          "assets/images/feedbackImage.png")
+                                      .image,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -453,278 +464,11 @@ class _MyHomePageState extends State<MyHomePage>
                         labelseeAllText(context, 'See All'),
                       ],
                     ),
-                    // ShowUpAnimation(
-                    //   delay: 200,
-                    //   child: Container(
-                    //     height: 160,
-                    //     width: MediaQuery.of(context).size.width,
-                    //     padding: EdgeInsets.all(5),
-                    //     decoration: BoxDecoration(
-                    //       color: whiteColor,
-                    //       border:
-                    //           Border.all(width: 2.5, color: primaryContainerShade),
-                    //       borderRadius: BorderRadius.circular(17),
-                    //     ),
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.start,
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         SizedBox(
-                    //           height: 110,
-                    //           child: Row(
-                    //             mainAxisAlignment: MainAxisAlignment.start,
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               SizedBox(
-                    //                 height: 150,
-                    //                 width: 210,
-                    //                 child: Padding(
-                    //                   padding: const EdgeInsets.all(10.0),
-                    //                   child: Row(
-                    //                     crossAxisAlignment: CrossAxisAlignment.start,
-                    //                     children: [
-                    //                       SizedBox(
-                    //                         height: 90,
-                    //                         width: 40,
-                    //                         child: Column(
-                    //                           children: [
-                    //                             Container(
-                    //                               height: 18,
-                    //                               width: 18,
-                    //                               decoration: BoxDecoration(
-                    //                                 color: Colors.blue,
-                    //                                 borderRadius:
-                    //                                     BorderRadius.circular(25),
-                    //                               ),
-                    //                               child: Center(
-                    //                                 child: Icon(
-                    //                                   Icons.arrow_drop_up_sharp,
-                    //                                   color: whiteColor,
-                    //                                   size: 18,
-                    //                                 ),
-                    //                               ),
-                    //                             ),
-                    //                             SizedBox(height: 3),
-                    //                             Icon(
-                    //                               Icons.circle,
-                    //                               color: outlineGrey,
-                    //                               size: 6,
-                    //                             ),
-                    //                             SizedBox(height: 3),
-                    //                             Icon(
-                    //                               Icons.circle,
-                    //                               color: outlineGrey,
-                    //                               size: 6,
-                    //                             ),
-                    //                             SizedBox(height: 3),
-                    //                             Icon(
-                    //                               Icons.circle,
-                    //                               color: outlineGrey,
-                    //                               size: 6,
-                    //                             ),
-                    //                             SizedBox(height: 3),
-                    //                             Icon(
-                    //                               Icons.circle,
-                    //                               color: outlineGrey,
-                    //                               size: 6,
-                    //                             ),
-                    //                             SizedBox(height: 3),
-                    //                             Icon(
-                    //                               Icons.circle,
-                    //                               color: outlineGrey,
-                    //                               size: 6,
-                    //                             ),
-                    //                             SizedBox(height: 3),
-                    //                             Container(
-                    //                               height: 18,
-                    //                               width: 18,
-                    //                               decoration: BoxDecoration(
-                    //                                 color: Colors.red,
-                    //                                 borderRadius:
-                    //                                     BorderRadius.circular(25),
-                    //                               ),
-                    //                               child: Center(
-                    //                                 child: Icon(
-                    //                                   Icons.arrow_drop_down_sharp,
-                    //                                   color: whiteColor,
-                    //                                   size: 18,
-                    //                                 ),
-                    //                               ),
-                    //                             ),
-                    //                           ],
-                    //                         ),
-                    //                       ),
-                    //                       Column(
-                    //                         crossAxisAlignment:
-                    //                             CrossAxisAlignment.start,
-                    //                         children: [
-                    //                           headingTextMedium(
-                    //                             context,
-                    //                             'Dansoman',
-                    //                             FontWeight.w600,
-                    //                             14,
-                    //                           ),
-                    //                           subheadingText(
-                    //                             context,
-                    //                             'June 23, 14:00',
-                    //                             align: TextAlign.start,
-                    //                             size: 10,
-                    //                           ),
-                    //                           SizedBox(height: 23),
-                    //                           headingTextMedium(
-                    //                             context,
-                    //                             'Kasoa',
-                    //                             FontWeight.w600,
-                    //                             14,
-                    //                           ),
-                    //                           Row(
-                    //                             children: [
-                    //                               subheadingText(
-                    //                                 context,
-                    //                                 'Transport Type: ',
-                    //                                 align: TextAlign.start,
-                    //                                 size: 10,
-                    //                               ),
-                    //                               subheadingText(
-                    //                                 context,
-                    //                                 'Trotro',
-                    //                                 align: TextAlign.start,
-                    //                                 size: 10,
-                    //                                 maxlines: 2,
-                    //                                 color: Colors.green,
-                    //                               ),
-                    //                             ],
-                    //                           ),
-                    //                         ],
-                    //                       ),
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //               Container(
-                    //                 height: 110,
-                    //                 width: 1,
-                    //                 color: outlineGrey,
-                    //               ),
-                    //               SizedBox(width: 8),
-                    //               Container(
-                    //                 height: 120,
-                    //                 width: 100,
-                    //                 decoration: BoxDecoration(),
-                    //                 child: Column(
-                    //                   mainAxisAlignment: MainAxisAlignment.start,
-                    //                   crossAxisAlignment: CrossAxisAlignment.start,
-                    //                   children: [
-                    //                     SizedBox(height: 5),
-                    //                     subheadingText(
-                    //                       context,
-                    //                       'TRIP AMOUNT',
-                    //                       align: TextAlign.start,
-                    //                       size: 11,
-                    //                     ),
-                    //                     Row(
-                    //                       children: [
-                    //                         CediSign(
-                    //                           size: 21,
-                    //                           weight: FontWeight.bold,
-                    //                         ),
-                    //                         SizedBox(width: 1),
-                    //                         headingTextMedium(
-                    //                           context,
-                    //                           '5.00p',
-                    //                           FontWeight.w600,
-                    //                           21,
-                    //                         ),
-                    //                       ],
-                    //                     ),
-                    //                     SizedBox(height: 1),
-                    //                     subheadingText(
-                    //                       context,
-                    //                       'TAKE NOTE!!',
-                    //                       align: TextAlign.start,
-                    //                       size: 11,
-                    //                     ),
-                    //                     SizedBox(height: 2),
-                    //                     subheadingText(
-                    //                       context,
-                    //                       'ALL FARES ARE ENDORSED BY THE GPRTU.',
-                    //                       align: TextAlign.start,
-                    //                       size: 10,
-                    //                       maxlines: 3,
-                    //                       color: Colors.blue,
-                    //                     ),
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //         Divider(
-                    //           color: primaryContainerShade,
-                    //         ),
-                    //         Row(
-                    //           mainAxisAlignment: MainAxisAlignment.center,
-                    //           children: [
-                    //             Row(
-                    //               children: [
-                    //                 Icon(
-                    //                   MingCute.heart_line,
-                    //                   color: outlineGrey,
-                    //                   size: 17,
-                    //                 ),
-                    //                 subheadingText(
-                    //                   context,
-                    //                   'Favorite',
-                    //                   align: TextAlign.start,
-                    //                   size: 11,
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             SizedBox(width: 50),
-                    //             Row(
-                    //               mainAxisAlignment: MainAxisAlignment.center,
-                    //               children: [
-                    //                 Icon(
-                    //                   Icons.ios_share_outlined,
-                    //                   color: outlineGrey,
-                    //                   size: 17,
-                    //                 ),
-                    //                 subheadingText(
-                    //                   context,
-                    //                   'Share',
-                    //                   align: TextAlign.start,
-                    //                   size: 11,
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             SizedBox(width: 50),
-                    //             Row(
-                    //               children: [
-                    //                 Icon(
-                    //                   MingCute.eye_2_line,
-                    //                   color: outlineGrey,
-                    //                   size: 17,
-                    //                 ),
-                    //                 subheadingText(
-                    //                   context,
-                    //                   '1.2k visits',
-                    //                   align: TextAlign.start,
-                    //                   size: 11,
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    // SizedBox(height: 10),
-
                     BlocBuilder<StationBloc, StationState>(
                         builder: (context, state) {
                       if (state is StationFetchedState) {
                         //final station = state.stations;
+
                         return SizedBox(
                           height: 350,
                           child: ListView.builder(
@@ -883,12 +627,286 @@ class _MyHomePageState extends State<MyHomePage>
                           ),
                         );
                       }
-                      return Center(
-                        child: SizedBox(
-                            height: 30,
-                            width: 30,
-                            child: CircularProgressIndicator()),
+                      return ShowUpAnimation(
+                        delay: 200,
+                        child: Container(
+                          height: 160,
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            border: Border.all(
+                                width: 2.5, color: primaryContainerShade),
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 110,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 150,
+                                      width: 210,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 90,
+                                              width: 40,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 18,
+                                                    width: 18,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25),
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons
+                                                            .arrow_drop_up_sharp,
+                                                        color: whiteColor,
+                                                        size: 18,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Icon(
+                                                    Icons.circle,
+                                                    color: outlineGrey,
+                                                    size: 6,
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Icon(
+                                                    Icons.circle,
+                                                    color: outlineGrey,
+                                                    size: 6,
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Icon(
+                                                    Icons.circle,
+                                                    color: outlineGrey,
+                                                    size: 6,
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Icon(
+                                                    Icons.circle,
+                                                    color: outlineGrey,
+                                                    size: 6,
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Icon(
+                                                    Icons.circle,
+                                                    color: outlineGrey,
+                                                    size: 6,
+                                                  ),
+                                                  SizedBox(height: 3),
+                                                  Container(
+                                                    height: 18,
+                                                    width: 18,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25),
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons
+                                                            .arrow_drop_down_sharp,
+                                                        color: whiteColor,
+                                                        size: 18,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                headingTextMedium(
+                                                  context,
+                                                  'Dansoman',
+                                                  FontWeight.w600,
+                                                  14,
+                                                ),
+                                                subheadingText(
+                                                  context,
+                                                  'June 23, 14:00',
+                                                  align: TextAlign.start,
+                                                  size: 10,
+                                                ),
+                                                SizedBox(height: 23),
+                                                headingTextMedium(
+                                                  context,
+                                                  'Kasoa',
+                                                  FontWeight.w600,
+                                                  14,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    subheadingText(
+                                                      context,
+                                                      'Transport Type: ',
+                                                      align: TextAlign.start,
+                                                      size: 10,
+                                                    ),
+                                                    subheadingText(
+                                                      context,
+                                                      'Trotro',
+                                                      align: TextAlign.start,
+                                                      size: 10,
+                                                      maxlines: 2,
+                                                      color: Colors.green,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 110,
+                                      width: 1,
+                                      color: outlineGrey,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Container(
+                                      height: 120,
+                                      width: 100,
+                                      decoration: BoxDecoration(),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 5),
+                                          subheadingText(
+                                            context,
+                                            'TRIP AMOUNT',
+                                            align: TextAlign.start,
+                                            size: 11,
+                                          ),
+                                          Row(
+                                            children: [
+                                              CediSign(
+                                                size: 21,
+                                                weight: FontWeight.bold,
+                                              ),
+                                              SizedBox(width: 1),
+                                              headingTextMedium(
+                                                context,
+                                                '5.00p',
+                                                FontWeight.w600,
+                                                21,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 1),
+                                          subheadingText(
+                                            context,
+                                            'TAKE NOTE!!',
+                                            align: TextAlign.start,
+                                            size: 11,
+                                          ),
+                                          SizedBox(height: 2),
+                                          subheadingText(
+                                            context,
+                                            'ALL FARES ARE ENDORSED BY THE GPRTU.',
+                                            align: TextAlign.start,
+                                            size: 10,
+                                            maxlines: 3,
+                                            color: Colors.blue,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                color: primaryContainerShade,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        MingCute.heart_line,
+                                        color: outlineGrey,
+                                        size: 17,
+                                      ),
+                                      subheadingText(
+                                        context,
+                                        'Favorite',
+                                        align: TextAlign.start,
+                                        size: 11,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 50),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.ios_share_outlined,
+                                        color: outlineGrey,
+                                        size: 17,
+                                      ),
+                                      subheadingText(
+                                        context,
+                                        'Share',
+                                        align: TextAlign.start,
+                                        size: 11,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 50),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        MingCute.eye_2_line,
+                                        color: outlineGrey,
+                                        size: 17,
+                                      ),
+                                      subheadingText(
+                                        context,
+                                        '1.2k visits',
+                                        align: TextAlign.start,
+                                        size: 11,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       );
+
+                      // Center(
+                      //   child: SizedBox(
+                      //       height: 30,
+                      //       width: 30,
+                      //       child: CircularProgressIndicator()),
+                      // );
                     }),
                   ],
                 ),
@@ -941,7 +959,7 @@ class _MyHomePageState extends State<MyHomePage>
                               child: const Icon(Icons.ads_click_rounded),
                             ),
                             title: Text(
-                              startPoint.toString(),
+                              startPoint ?? 'No station selected',
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge!
@@ -1008,65 +1026,114 @@ class _MyHomePageState extends State<MyHomePage>
                             ],
                           ),
                           const SizedBox(height: 14),
-                          Container(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200.withOpacity(0.4),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.grey.shade400.withOpacity(0.5),
+                          // Container(
+                          //   height: 50,
+                          //   width: MediaQuery.of(context).size.width,
+                          //   decoration: BoxDecoration(
+                          //     color: Colors.grey.shade200.withOpacity(0.4),
+                          //     border: Border.all(
+                          //       width: 1,
+                          //       color: Colors.grey.shade400.withOpacity(0.5),
+                          //     ),
+                          //     borderRadius: BorderRadius.circular(13),
+                          //   ),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.all(8.0),
+                          //     child: Row(
+                          //       mainAxisAlignment:
+                          //           MainAxisAlignment.spaceBetween,
+                          //       children: [
+                          //         Padding(
+                          //           padding: const EdgeInsets.all(8.0),
+                          //           child: Row(
+                          //             children: [
+                          //               Text(
+                          //                 "Enter Destination",
+                          //                 style: Theme.of(context)
+                          //                     .textTheme
+                          //                     .bodySmall!
+                          //                     .copyWith(
+                          //                       fontSize: 13,
+                          //                       color: Colors.black54,
+                          //                     ),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           height: 20,
+                          //           width: 20,
+                          //           decoration: BoxDecoration(
+                          //             color: primaryColor,
+                          //             borderRadius: BorderRadius.circular(20),
+                          //           ),
+                          //           child: const Center(
+                          //             child: Icon(
+                          //               Icons.location_on,
+                          //               size: 13,
+                          //               weight: 8,
+                          //               grade: 8,
+                          //               opticalSize: 8,
+                          //               color: Colors.white,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                          TextFormField(
+                            controller: destinationController,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 15,
+                                      color: blackColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                            //onChanged: (value) => (),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Enter Destination';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              destination = value!.trim();
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Enter Destination",
+                              hintStyle: TextStyle(
+                                  color: iconGrey.withOpacity(0.7),
+                                  fontSize: 13),
+                              prefixIcon: const Icon(
+                                MingCute.location_2_fill,
+                                color: primaryColorDeep,
+                                size: 23,
                               ),
-                              borderRadius: BorderRadius.circular(13),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "Enter Destination",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(
-                                                fontSize: 13,
-                                                color: Colors.black54,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.location_on,
-                                        size: 13,
-                                        weight: 8,
-                                        grade: 8,
-                                        opticalSize: 8,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              filled: true,
+                              isDense: true,
+                              fillColor: whiteColor,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(color: Colors.green),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: outlineGrey),
+                                borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                           ),
                           const SizedBox(height: 20),
                           GestureDetector(
                             onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/trips',
+                                arguments: TripsPageArguments(
+                                  startLocation: 'Circle',
+                                  destination: destinationController.text,
+                                ),
+                              );
                               setState(() {
                                 showPopup = !showPopup;
                               });

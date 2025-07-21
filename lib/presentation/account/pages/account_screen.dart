@@ -121,7 +121,7 @@ class _AccountPageState extends State<AccountPage> {
                         SizedBox(height: 18),
                         headingTextMedium(
                           context,
-                          "Akua Mensah",
+                          "Patrick Boat",
                           FontWeight.w600,
                           23,
                           whiteColor,
@@ -237,7 +237,7 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     subtitle: subheadingTextMedium(
                       context,
-                      'akua.mensah@gmail.com',
+                      'kofi.boat@gmail.com',
                       11.5,
                     ),
                   ),

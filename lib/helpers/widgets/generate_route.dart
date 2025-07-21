@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trotrolive_mobile_new/presentation/trips/components/trips_page_arguments.dart';
+import 'package:trotrolive_mobile_new/presentation/trips/pages/trips_screen.dart';
 import '../../presentation/home/pages/home.dart';
 import '../../presentation/home/pages/main_home.dart';
 import '../../presentation/intro/onboarding screen/onboarding_screen.dart';
@@ -18,6 +20,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case '/mainhome':
       return slideFromRight(MainHomePage());
+
+    case '/trips':
+      final args = settings.arguments as TripsPageArguments;
+      return slideFromRight(
+        TripsPage(
+          startLocation: args.startLocation,
+          destination: args.destination,
+        ),
+      );
 
     default:
       return MaterialPageRoute(

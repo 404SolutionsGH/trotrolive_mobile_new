@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:trotrolive_mobile_new/presentation/items/pages/lost_item_screen.dart';
 import 'package:trotrolive_mobile_new/presentation/stories/pages/stories_screen.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/pages/trips_screen.dart';
 import '../../../utils/constants/color constants/colors.dart';
@@ -24,7 +25,7 @@ class _MainHomePageState extends State<MainHomePage> {
     MyHomePage(),
     StoriesPage(),
     TripsPage(),
-    Container(),
+    LostItemScreen(),
     AccountPage(),
   ];
 

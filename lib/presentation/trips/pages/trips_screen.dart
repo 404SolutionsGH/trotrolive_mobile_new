@@ -87,24 +87,21 @@ class _TripsPageState extends State<TripsPage>
     return BlocConsumer<TripsBloc, TripsState>(
       listener: (BuildContext context, state) {
         if (state is TripsFailureState) {
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return DialogBoxUtil(
-                  context,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  icon: MingCute.warning_line,
-                  content: state.error,
-                  leftText: '',
-                  rightText: 'Exit',
-                  oncancel: () {
-                    Navigator.pop(context);
-                  },
-                );
-              });
+          debugPrint("Fetch Failed");
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                elevation: 0.5,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(8),
+                content: Text(
+                  state.error,
+                  style: const TextStyle(),
+                ),
+                backgroundColor: blackColor,
+              ),
+            );
+          });
         }
       },
       builder: (BuildContext context, state) {
@@ -112,20 +109,73 @@ class _TripsPageState extends State<TripsPage>
           final trips = state.trips!;
           final hasMore = state.hasMore;
           return Scaffold(
-            backgroundColor: primaryColor,
-            appBar: AppBar(
-              //shadowColor: primaryContainerShade,
-              //elevation: 0.1,
-              // surfaceTintColor: whiteColor,
-              backgroundColor: primaryColor,
-              automaticallyImplyLeading: false,
-              centerTitle: true,
-              title: headingTextMedium(
-                context,
-                "Available Trips",
-                FontWeight.w600,
-                16,
-                whiteColor,
+            backgroundColor: primaryColorDeep,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(120),
+              child: Container(
+                decoration: BoxDecoration(
+                  //color: primaryColor,
+                  gradient: LinearGradient(
+                    begin: Alignment.center,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      primaryColor.withOpacity(0.95),
+                      primaryColorDeep,
+                    ],
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 5,
+                      top: -180,
+                      right: -50,
+                      child: Icon(
+                        Icons.phone_android_rounded,
+                        size: 200,
+                        color: Color.fromRGBO(255, 255, 255, 0.05),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -190,
+                      top: 5,
+                      left: -50,
+                      child: Icon(
+                        Icons.luggage_rounded,
+                        size: 280,
+                        color: whiteColor.withOpacity(0.05),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      top: 20,
+                      right: 20,
+                      left: 20,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            headingTextMedium(
+                              context,
+                              "Available Trips",
+                              FontWeight.bold,
+                              20,
+                              whiteColor,
+                            ),
+                            SizedBox(height: 2),
+                            subheadingText(
+                              context,
+                              'Fares for certain routes may change periodically due to changes from our database.!!',
+                              size: 12,
+                              color: secondaryColor4,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             extendBody: true,
@@ -145,44 +195,44 @@ class _TripsPageState extends State<TripsPage>
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: ShowUpAnimation(
-                          delay: 200,
-                          child: Container(
-                            height: 107,
-                            width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: primarySucessShade,
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.green,
-                              ),
-                              borderRadius: BorderRadius.circular(17),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  headingTextMedium(context, 'Disclaimer!!',
-                                      FontWeight.w600, 14),
-                                  SizedBox(height: 8),
-                                  subheadingTextMedium(
-                                    context,
-                                    'Fares for certain routes may change periodically due to changes from our database.',
-                                    12,
-                                  ),
-                                  SizedBox(height: 15),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
+                      // SizedBox(height: 10),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(12.0),
+                      //   child: ShowUpAnimation(
+                      //     delay: 200,
+                      //     child: Container(
+                      //       height: 107,
+                      //       width: MediaQuery.of(context).size.width,
+                      //       padding: EdgeInsets.all(5),
+                      //       decoration: BoxDecoration(
+                      //         color: primarySucessShade,
+                      //         border: Border.all(
+                      //           width: 1,
+                      //           color: Colors.green,
+                      //         ),
+                      //         borderRadius: BorderRadius.circular(17),
+                      //       ),
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(10.0),
+                      //         child: Column(
+                      //           crossAxisAlignment: CrossAxisAlignment.start,
+                      //           children: [
+                      //             headingTextMedium(context, 'Disclaimer!!',
+                      //                 FontWeight.w600, 14),
+                      //             SizedBox(height: 8),
+                      //             subheadingTextMedium(
+                      //               context,
+                      //               'Fares for certain routes may change periodically due to changes from our database.',
+                      //               12,
+                      //             ),
+                      //             SizedBox(height: 15),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      if (state is TripsFetchedState) SizedBox(height: 30),
                       Container(
                         height: 40,
                         color: barBg.withOpacity(0.5),
@@ -582,11 +632,77 @@ class _TripsPageState extends State<TripsPage>
         }
         return Scaffold(
           backgroundColor: secondaryBg,
-          body: Center(
-            child: SpinKitWave(
-              color: primaryColor,
-              size: 20,
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(120),
+            child: Container(
+              decoration: BoxDecoration(
+                //color: primaryColor,
+                gradient: LinearGradient(
+                  begin: Alignment.center,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    primaryColor.withOpacity(0.95),
+                    primaryColorDeep,
+                  ],
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    bottom: 5,
+                    top: -180,
+                    right: -50,
+                    child: Icon(
+                      Icons.phone_android_rounded,
+                      size: 200,
+                      color: Color.fromRGBO(255, 255, 255, 0.05),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -190,
+                    top: 5,
+                    left: -50,
+                    child: Icon(
+                      Icons.luggage_rounded,
+                      size: 280,
+                      color: whiteColor.withOpacity(0.05),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    top: 20,
+                    right: 20,
+                    left: 20,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          headingTextMedium(
+                            context,
+                            "Available Trips",
+                            FontWeight.bold,
+                            20,
+                            whiteColor,
+                          ),
+                          SizedBox(height: 2),
+                          subheadingText(
+                            context,
+                            'Fares for certain routes may change periodically due to changes from our database.!!',
+                            size: 12,
+                            color: secondaryColor4,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+          ),
+          extendBody: true,
+          body: Center(
+            child: Text('Loading trips....'),
           ),
         );
       },

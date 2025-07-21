@@ -184,6 +184,19 @@ subheadingTextMedium(context, String text, double? size) {
   );
 }
 
+subheadingTextMediumIntro(context, String text, double? size) {
+  return Text(
+    textAlign: TextAlign.center,
+    overflow: TextOverflow.visible,
+    maxLines: 4,
+    text,
+    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+          color: Colors.grey,
+          fontSize: size ?? 15,
+        ),
+  );
+}
+
 labelTextSmall(context, String text) {
   return Text(
     textAlign: TextAlign.start,
