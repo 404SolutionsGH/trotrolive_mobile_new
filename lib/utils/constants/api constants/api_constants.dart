@@ -3,3 +3,6 @@ const String stationsUrl = '$baseUrl' '/api/stations/';
 const String nearbystationsUrl = '$baseUrl' '/api/stations/nearest/';
 const String tripsUrl = '$baseUrl' '/api/trips/';
 const String storiesUrl = '$baseUrl' '/api/trotrostories/';
+
+//
+const String testUrl = 'https://angularworldclub.com/api/event/';

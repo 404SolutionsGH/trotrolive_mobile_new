@@ -9,6 +9,9 @@ import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/cedi_widget.dart';
 import '../../../helpers/widgets/dialogbox_util.dart';
+import '../../../helpers/widgets/shimmer_effect.dart';
+import '../../../theme/bloc/theme_bloc.dart';
+import '../../../theme/bloc/theme_event.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../../stations/bloc/stations_bloc.dart';
@@ -207,7 +210,10 @@ class _MyHomePageState extends State<MyHomePage>
                             actions: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(context, '/notification');
+                                  context
+                                      .read<ThemeBloc>()
+                                      .add(ToggleThemeEvent());
+                                  //Navigator.pushNamed(context, '/notification');
                                 },
                                 child: CircleAvatar(
                                   backgroundColor: blackColorShade,
@@ -381,7 +387,9 @@ class _MyHomePageState extends State<MyHomePage>
                       ],
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/events');
+                      },
                       child: Container(
                         height: 155,
                         width: MediaQuery.of(context).size.width,
@@ -451,132 +459,116 @@ class _MyHomePageState extends State<MyHomePage>
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         headingTextMedium(
                           context,
-                          'Nearby Stations! ',
+                          'Nearby Stations',
                           FontWeight.w600,
                           14,
                         ),
-                        labelseeAllText(context, 'See All'),
+                        labelseeAllText(context, 'See all stations'),
                       ],
                     ),
                     BlocBuilder<StationBloc, StationState>(
-                        builder: (context, state) {
-                      if (state is StationFetchedState) {
-                        //final station = state.stations;
+                      builder: (context, state) {
+                        if (state is StationLoading) {
+                          return StationShimmerTile();
+                        }
+                        if (state is StationFailureState) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(
+                              child: Text(state.error,
+                                  style: TextStyle(color: Colors.red)),
+                            ),
+                          );
+                        }
 
-                        return SizedBox(
-                          height: 350,
-                          child: ListView.builder(
-                            itemCount: state.stations!.length,
-                            itemBuilder: (context, index) {
-                              // final stations = station![index];
-                              debugPrint(
-                                  "Stations rendered: ${state.stations}");
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    startPoint = state.stations![index].name;
-                                    showPopup = !showPopup;
-                                  });
-                                  // _displayBottomSheet(context,
-                                  //     stationname: state.stations![index]);
-                                },
-                                child: Container(
-                                  height: 130,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    border: Border.all(
-                                      color: primaryContainerShade,
-                                      width: 2.5,
+                        if (state is StationFetchedState &&
+                            state.stations!.isNotEmpty) {
+                          return SizedBox(
+                            height: 350,
+                            child: ListView.builder(
+                              itemCount: state.stations!.length,
+                              itemBuilder: (context, index) {
+                                final station = state.stations![index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      startPoint = station.name;
+                                      showPopup = !showPopup;
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: whiteColor,
+                                      border: Border.all(
+                                          color: primaryContainerShade,
+                                          width: 2.5),
+                                      borderRadius: BorderRadius.circular(17),
                                     ),
-                                    borderRadius: BorderRadius.circular(17),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 75,
-                                        child: Row(
+                                    child: Column(
+                                      children: [
+                                        // Top Section
+                                        Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(
-                                              width: 210,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
-                                                child: Row(
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        _dotIcon(
-                                                            Colors.blue,
-                                                            Icons
-                                                                .location_on_outlined),
-                                                        ...List.generate(
-                                                          5,
-                                                          (_) => const Icon(
-                                                              Icons.circle,
-                                                              size: 6,
-                                                              color:
-                                                                  outlineGrey),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        headingTextMedium(
-                                                          context,
-                                                          state.stations![index]
-                                                              .name,
-                                                          FontWeight.w600,
-                                                          14,
-                                                        ),
-                                                        subheadingText(
-                                                          context,
-                                                          "${state.stations![index].distanceToUser}km",
-                                                          size: 10,
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 5),
-                                                        Row(
-                                                          children: [
-                                                            subheadingText(
-                                                                context,
-                                                                'Station Type: ',
-                                                                size: 11),
-                                                            subheadingText(
-                                                              context,
-                                                              state.stations![index]
-                                                                          .isBusStop ==
-                                                                      true
-                                                                  ? ' Bus Stop'
-                                                                  : ' Not Bus Stop',
-                                                              size: 11,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                            // Icon + Labels
+                                            Column(
+                                              children: [
+                                                _dotIcon(Colors.blue,
+                                                    Icons.location_on_outlined),
+                                                ...List.generate(
+                                                  5,
+                                                  (_) => const Icon(
+                                                      Icons.circle,
+                                                      size: 6,
+                                                      color: outlineGrey),
                                                 ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 10),
+                                            // Station Info
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  headingTextMedium(
+                                                      context,
+                                                      station.name,
+                                                      FontWeight.w600,
+                                                      14),
+                                                  subheadingText(context,
+                                                      "${station.distanceToUser} km",
+                                                      size: 10),
+                                                  const SizedBox(height: 5),
+                                                  Row(
+                                                    children: [
+                                                      subheadingText(context,
+                                                          'Station Type: ',
+                                                          size: 11),
+                                                      subheadingText(
+                                                        context,
+                                                        station.isBusStop
+                                                            ? ' Bus Stop'
+                                                            : ' Not Bus Stop',
+                                                        size: 11,
+                                                        color: Colors.green,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            const VerticalDivider(
-                                                width: 0.5, color: outlineGrey),
                                             const SizedBox(width: 8),
+                                            // GPRTU Info
                                             SizedBox(
                                               width: 100,
                                               child: Column(
@@ -601,313 +593,41 @@ class _MyHomePageState extends State<MyHomePage>
                                             ),
                                           ],
                                         ),
-                                      ),
-                                      Divider(color: primaryContainerShade),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          _iconLabel(context,
-                                              MingCute.heart_line, 'Favorite'),
-                                          _iconLabel(
-                                              context,
-                                              Icons.ios_share_outlined,
-                                              'Share'),
-                                          _iconLabel(
-                                              context,
-                                              MingCute.eye_2_line,
-                                              '1.2k visits'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      }
-                      return ShowUpAnimation(
-                        delay: 200,
-                        child: Container(
-                          height: 160,
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: whiteColor,
-                            border: Border.all(
-                                width: 2.5, color: primaryContainerShade),
-                            borderRadius: BorderRadius.circular(17),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 110,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 150,
-                                      width: 210,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        const Divider(
+                                            color: primaryContainerShade),
+                                        // Bottom Action Row
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            SizedBox(
-                                              height: 90,
-                                              width: 40,
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    height: 18,
-                                                    width: 18,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.blue,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25),
-                                                    ),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons
-                                                            .arrow_drop_up_sharp,
-                                                        color: whiteColor,
-                                                        size: 18,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 3),
-                                                  Icon(
-                                                    Icons.circle,
-                                                    color: outlineGrey,
-                                                    size: 6,
-                                                  ),
-                                                  SizedBox(height: 3),
-                                                  Icon(
-                                                    Icons.circle,
-                                                    color: outlineGrey,
-                                                    size: 6,
-                                                  ),
-                                                  SizedBox(height: 3),
-                                                  Icon(
-                                                    Icons.circle,
-                                                    color: outlineGrey,
-                                                    size: 6,
-                                                  ),
-                                                  SizedBox(height: 3),
-                                                  Icon(
-                                                    Icons.circle,
-                                                    color: outlineGrey,
-                                                    size: 6,
-                                                  ),
-                                                  SizedBox(height: 3),
-                                                  Icon(
-                                                    Icons.circle,
-                                                    color: outlineGrey,
-                                                    size: 6,
-                                                  ),
-                                                  SizedBox(height: 3),
-                                                  Container(
-                                                    height: 18,
-                                                    width: 18,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.red,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25),
-                                                    ),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons
-                                                            .arrow_drop_down_sharp,
-                                                        color: whiteColor,
-                                                        size: 18,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                headingTextMedium(
-                                                  context,
-                                                  'Dansoman',
-                                                  FontWeight.w600,
-                                                  14,
-                                                ),
-                                                subheadingText(
-                                                  context,
-                                                  'June 23, 14:00',
-                                                  align: TextAlign.start,
-                                                  size: 10,
-                                                ),
-                                                SizedBox(height: 23),
-                                                headingTextMedium(
-                                                  context,
-                                                  'Kasoa',
-                                                  FontWeight.w600,
-                                                  14,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    subheadingText(
-                                                      context,
-                                                      'Transport Type: ',
-                                                      align: TextAlign.start,
-                                                      size: 10,
-                                                    ),
-                                                    subheadingText(
-                                                      context,
-                                                      'Trotro',
-                                                      align: TextAlign.start,
-                                                      size: 10,
-                                                      maxlines: 2,
-                                                      color: Colors.green,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                            _iconLabel(
+                                                context,
+                                                MingCute.heart_line,
+                                                'Favorite'),
+                                            _iconLabel(
+                                                context,
+                                                Icons.ios_share_outlined,
+                                                'Share'),
+                                            _iconLabel(
+                                                context,
+                                                MingCute.eye_2_line,
+                                                '1.2k visits'),
                                           ],
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                    Container(
-                                      height: 110,
-                                      width: 1,
-                                      color: outlineGrey,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Container(
-                                      height: 120,
-                                      width: 100,
-                                      decoration: BoxDecoration(),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(height: 5),
-                                          subheadingText(
-                                            context,
-                                            'TRIP AMOUNT',
-                                            align: TextAlign.start,
-                                            size: 11,
-                                          ),
-                                          Row(
-                                            children: [
-                                              CediSign(
-                                                size: 21,
-                                                weight: FontWeight.bold,
-                                              ),
-                                              SizedBox(width: 1),
-                                              headingTextMedium(
-                                                context,
-                                                '5.00p',
-                                                FontWeight.w600,
-                                                21,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 1),
-                                          subheadingText(
-                                            context,
-                                            'TAKE NOTE!!',
-                                            align: TextAlign.start,
-                                            size: 11,
-                                          ),
-                                          SizedBox(height: 2),
-                                          subheadingText(
-                                            context,
-                                            'ALL FARES ARE ENDORSED BY THE GPRTU.',
-                                            align: TextAlign.start,
-                                            size: 10,
-                                            maxlines: 3,
-                                            color: Colors.blue,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Divider(
-                                color: primaryContainerShade,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        MingCute.heart_line,
-                                        color: outlineGrey,
-                                        size: 17,
-                                      ),
-                                      subheadingText(
-                                        context,
-                                        'Favorite',
-                                        align: TextAlign.start,
-                                        size: 11,
-                                      ),
-                                    ],
                                   ),
-                                  SizedBox(width: 50),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.ios_share_outlined,
-                                        color: outlineGrey,
-                                        size: 17,
-                                      ),
-                                      subheadingText(
-                                        context,
-                                        'Share',
-                                        align: TextAlign.start,
-                                        size: 11,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 50),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        MingCute.eye_2_line,
-                                        color: outlineGrey,
-                                        size: 17,
-                                      ),
-                                      subheadingText(
-                                        context,
-                                        '1.2k visits',
-                                        align: TextAlign.start,
-                                        size: 11,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-
-                      // Center(
-                      //   child: SizedBox(
-                      //       height: 30,
-                      //       width: 30,
-                      //       child: CircularProgressIndicator()),
-                      // );
-                    }),
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        return ShowUpAnimation(
+                          delay: 200,
+                          child: PlaceholderContainer(),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
@@ -1171,6 +891,27 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
+  Widget PlaceholderContainer() {
+    return Container(
+      height: 150,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Center(
+        child: Text(
+          'No Stations Available',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _dotIcon(Color color, IconData icon) {
     return Container(
       height: 22,
@@ -1190,179 +931,6 @@ class _MyHomePageState extends State<MyHomePage>
         const SizedBox(width: 3),
         subheadingText(context, label, size: 11),
       ],
-    );
-  }
-
-  Future _displayBottomSheet(BuildContext context,
-      {required StationModel stationname}) {
-    TextEditingController textFieldValue1 = TextEditingController();
-    textFieldValue1.text = stationname.name;
-    TextEditingController textFieldValue2 = TextEditingController();
-
-    String startingPoint = '';
-    String destination = '';
-
-    String errorMessage = 'Please enter destination !!';
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    return showModalBottomSheet(
-      showDragHandle: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(5.0),
-        ),
-      ),
-      isScrollControlled: true,
-      context: context,
-      builder: (context) => SingleChildScrollView(
-        child: SizedBox(
-          child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 120,
-                          width: 50,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset("assets/images/route_50px.png"),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 145,
-                          width: 290,
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                autofocus: true,
-                                controller: textFieldValue1,
-                                readOnly: textFieldValue1.text.isNotEmpty,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  hintStyle: const TextStyle(
-                                    color: primaryColor,
-                                  ),
-                                  prefixIcon: const Icon(Icons.location_pin,
-                                      color: Colors.black45),
-                                  labelStyle: const TextStyle(
-                                    fontSize: 15,
-                                    color: primaryColor,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor:
-                                      const Color.fromARGB(255, 225, 225, 225),
-                                ),
-                              ),
-                              const SizedBox(height: 7),
-                              TextFormField(
-                                scrollPhysics: const BouncingScrollPhysics(),
-                                enableSuggestions: true,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                controller: textFieldValue2,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return errorMessage;
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  destination = value!.trim();
-                                },
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  hintText: 'Enter Destination',
-                                  hintStyle: const TextStyle(),
-                                  prefixIcon: const Icon(
-                                    Icons.near_me,
-                                    color: Colors.black45,
-                                  ),
-                                  suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      textFieldValue2.clear();
-                                    },
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.black45,
-                                    ),
-                                  ),
-                                  labelStyle: const TextStyle(
-                                      fontSize: 15, color: primaryColor),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    borderSide: const BorderSide(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  filled: true,
-                                  fillColor:
-                                      const Color.fromARGB(255, 225, 225, 225),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(9.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        if (formKey.currentState!.validate()) {
-                          formKey.currentState!.save();
-                          // Get.to(() => SearchPage(
-                          //     textFieldValue1: textFieldValue1,
-                          //     textFieldValue2: textFieldValue2));
-                        }
-                      },
-                      child: Container(
-                        height: 55,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: primaryColor,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Know Your Fare',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

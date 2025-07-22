@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'presentation/location/bloc/location_bloc.dart';
 import 'presentation/stations/bloc/stations_bloc.dart';
 import 'presentation/trips/bloc/trips_bloc.dart';
+import 'theme/bloc/theme_bloc.dart';
 import 'trotro_app.dart';
 
 class TrotroAppBlocs extends StatelessWidget {
@@ -23,6 +24,7 @@ class TrotroAppBlocs extends StatelessWidget {
         BlocProvider(
           create: (context) => TripsBloc()..add(FetchTripEvent()),
         ),
+        BlocProvider(create: (context) => ThemeBloc()),
       ],
       child: BlocProvider(
           create: (context) => LocationBloc()..add(LoadLocationEvent()),

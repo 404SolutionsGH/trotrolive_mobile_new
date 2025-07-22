@@ -11,11 +11,13 @@ class StationFetchedState extends StationState {
   final String message;
   final List<StationModel>? stations;
   bool isLoaded;
+  final bool fromCache;
 
   StationFetchedState({
     required this.message,
     required this.stations,
     this.isLoaded = false,
+    this.fromCache = false,
   });
 }
 

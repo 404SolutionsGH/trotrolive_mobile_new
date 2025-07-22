@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
+import '../../../theme/bloc/theme_bloc.dart';
+import '../../../theme/bloc/theme_event.dart';
 import '../../../utils/constants/color constants/colors.dart';
 
 class AccountPage extends StatefulWidget {
