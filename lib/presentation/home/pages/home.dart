@@ -210,10 +210,10 @@ class _MyHomePageState extends State<MyHomePage>
                             actions: [
                               GestureDetector(
                                 onTap: () {
-                                  context
-                                      .read<ThemeBloc>()
-                                      .add(ToggleThemeEvent());
-                                  //Navigator.pushNamed(context, '/notification');
+                                  // context
+                                  //     .read<ThemeBloc>()
+                                  //     .add(ToggleThemeEvent());
+                                  // //Navigator.pushNamed(context, '/notification');
                                 },
                                 child: CircleAvatar(
                                   backgroundColor: blackColorShade,
