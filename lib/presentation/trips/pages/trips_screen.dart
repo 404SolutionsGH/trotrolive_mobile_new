@@ -114,7 +114,6 @@ class _TripsPageState extends State<TripsPage>
               preferredSize: const Size.fromHeight(120),
               child: Container(
                 decoration: BoxDecoration(
-                  //color: primaryColor,
                   gradient: LinearGradient(
                     begin: Alignment.center,
                     end: Alignment.bottomCenter,
@@ -195,43 +194,6 @@ class _TripsPageState extends State<TripsPage>
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // SizedBox(height: 10),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(12.0),
-                      //   child: ShowUpAnimation(
-                      //     delay: 200,
-                      //     child: Container(
-                      //       height: 107,
-                      //       width: MediaQuery.of(context).size.width,
-                      //       padding: EdgeInsets.all(5),
-                      //       decoration: BoxDecoration(
-                      //         color: primarySucessShade,
-                      //         border: Border.all(
-                      //           width: 1,
-                      //           color: Colors.green,
-                      //         ),
-                      //         borderRadius: BorderRadius.circular(17),
-                      //       ),
-                      //       child: Padding(
-                      //         padding: const EdgeInsets.all(10.0),
-                      //         child: Column(
-                      //           crossAxisAlignment: CrossAxisAlignment.start,
-                      //           children: [
-                      //             headingTextMedium(context, 'Disclaimer!!',
-                      //                 FontWeight.w600, 14),
-                      //             SizedBox(height: 8),
-                      //             subheadingTextMedium(
-                      //               context,
-                      //               'Fares for certain routes may change periodically due to changes from our database.',
-                      //               12,
-                      //             ),
-                      //             SizedBox(height: 15),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       if (state is TripsFetchedState) SizedBox(height: 30),
                       Container(
                         height: 40,
@@ -636,7 +598,6 @@ class _TripsPageState extends State<TripsPage>
             preferredSize: const Size.fromHeight(120),
             child: Container(
               decoration: BoxDecoration(
-                //color: primaryColor,
                 gradient: LinearGradient(
                   begin: Alignment.center,
                   end: Alignment.bottomCenter,

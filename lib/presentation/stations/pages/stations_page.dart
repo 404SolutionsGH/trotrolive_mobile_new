@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/presentation/stations/bloc/stations_bloc.dart';
 import 'package:trotrolive_mobile_new/presentation/location/bloc/location_bloc.dart';
-
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/cedi_widget.dart';
 import '../../../helpers/widgets/dialogbox_util.dart';
@@ -52,10 +51,6 @@ class _StationsPageState extends State<StationsPage>
             );
           });
         }
-        // if (locationState is LocationFetchedState && !hasFetched) {
-        //   context.read<StationBloc>().add(FetchStationEvent());
-        //   hasFetched = true;
-        // }
       },
       builder: (context, state) {
         if (locationState is LocationFailure) {
@@ -98,11 +93,6 @@ class _StationsPageState extends State<StationsPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // SvgPicture.asset(
-                  //   'assets/svgs/undraw_file-search_cbur.svg',
-                  //   height: 150,
-                  //   width: 150,
-                  // ),
                   SizedBox(height: 20),
                   headingTextMedium(context, state.error, FontWeight.w600, 14),
                 ],
@@ -135,9 +125,7 @@ class _StationsPageState extends State<StationsPage>
               ),
             );
           }
-
           stations.sort((a, b) => a.distanceToUser.compareTo(b.distanceToUser));
-
           return SizedBox(
             height: 350,
             child: ListView.builder(
@@ -289,7 +277,6 @@ class _StationsPageState extends State<StationsPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SpinKitDoubleBounce(
-                // lineWidth: 3,
                 size: 60,
                 color: primaryColor,
               ),

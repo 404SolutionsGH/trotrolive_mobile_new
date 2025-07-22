@@ -1,21 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:trotrolive_mobile_new/presentation/stations/repository/model/stations_model.dart';
 import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
-import '../../../helpers/widgets/cedi_widget.dart';
-import '../../../helpers/widgets/dialogbox_util.dart';
 import '../../../helpers/widgets/shimmer_effect.dart';
-import '../../../theme/bloc/theme_bloc.dart';
-import '../../../theme/bloc/theme_event.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../../stations/bloc/stations_bloc.dart';
-import '../../stations/pages/stations_page.dart';
 import '../../trips/components/trips_page_arguments.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -27,19 +19,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with AutomaticKeepAliveClientMixin {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Fetch location
-  //   final locationBloc = context.read<LocationBloc>();
-  //   locationBloc.add(LoadLocationEvent());
-  //   // Listen for location state and trigger station fetch
-  //   locationBloc.stream.listen((state) {
-  //     if (state is LocationFetchedState) {
-  //       context.read<StationBloc>().add(FetchStationEvent());
-  //     }
-  //   });
-  // }
   @override
   bool get wantKeepAlive => true;
   bool hasFetched = false;
@@ -50,27 +29,6 @@ class _MyHomePageState extends State<MyHomePage>
   String destination = '';
 
   final destinationController = TextEditingController();
-  late final StreamSubscription _locationSubscription;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   final locationBloc = context.read<LocationBloc>();
-  //   locationBloc.add(LoadLocationEvent());
-
-  //   _locationSubscription = locationBloc.stream.listen((state) {
-  //     if (state is LocationFetchedState) {
-  //       context.read<StationBloc>().add(FetchStationEvent());
-  //     }
-  //   });
-  // }
-
-  // @override
-  // void dispose() {
-  //   _locationSubscription.cancel();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +41,6 @@ class _MyHomePageState extends State<MyHomePage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SpinKitDoubleBounce(
-                // lineWidth: 3,
                 size: 60,
                 color: primaryColor,
               ),
@@ -95,21 +52,6 @@ class _MyHomePageState extends State<MyHomePage>
         );
       }
     }, builder: (context, state) {
-      //   if (locationState is LocationFailure) {
-      //     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //       ScaffoldMessenger.of(context).showSnackBar(
-      //         SnackBar(
-      //           behavior: SnackBarBehavior.floating,
-      //           margin: const EdgeInsets.all(8),
-      //           content: Text(
-      //             'Check your device location or internet connection',
-      //             style: const TextStyle(),
-      //           ),
-      //           backgroundColor: blackColor,
-      //         ),
-      //       );
-      //     });
-      //  }
       if (state is StationFailureState) {
         isMessage = true;
         debugPrint("Fetch Failed");
@@ -126,26 +68,6 @@ class _MyHomePageState extends State<MyHomePage>
               backgroundColor: blackColor,
             ),
           );
-
-          // showDialog(
-          //   barrierDismissible: false,
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return DialogBoxUtil(
-          //       context,
-          //       onTap: () {
-          //         Navigator.pop(context);
-          //       },
-          //       icon: MingCute.warning_line,
-          //       content: state.error,
-          //       leftText: '',
-          //       rightText: 'Exit',
-          //       oncancel: () {
-          //         Navigator.pop(context);
-          //       },
-          //     );
-          //   },
-          // );
         });
       }
       return Stack(
@@ -157,7 +79,6 @@ class _MyHomePageState extends State<MyHomePage>
               preferredSize: const Size.fromHeight(190),
               child: Container(
                 decoration: BoxDecoration(
-                  //color: primaryColor,
                   gradient: LinearGradient(
                     begin: Alignment.center,
                     end: Alignment.bottomCenter,
@@ -209,12 +130,7 @@ class _MyHomePageState extends State<MyHomePage>
                             backgroundColor: Colors.transparent,
                             actions: [
                               GestureDetector(
-                                onTap: () {
-                                  // context
-                                  //     .read<ThemeBloc>()
-                                  //     .add(ToggleThemeEvent());
-                                  // //Navigator.pushNamed(context, '/notification');
-                                },
+                                onTap: () {},
                                 child: CircleAvatar(
                                   backgroundColor: blackColorShade,
                                   child: Center(
@@ -296,7 +212,6 @@ class _MyHomePageState extends State<MyHomePage>
                                       whiteColor),
                                   SizedBox(height: 15),
                                   TextFormField(
-                                    //controller: searchController,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
@@ -305,7 +220,6 @@ class _MyHomePageState extends State<MyHomePage>
                                           color: blackColor,
                                           fontWeight: FontWeight.w500,
                                         ),
-                                    //onChanged: (value) => (),
                                     validator: (value) {
                                       if (value!.isEmpty) {
                                         return 'Type something';
@@ -514,12 +428,10 @@ class _MyHomePageState extends State<MyHomePage>
                                     ),
                                     child: Column(
                                       children: [
-                                        // Top Section
                                         Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            // Icon + Labels
                                             Column(
                                               children: [
                                                 _dotIcon(Colors.blue,
@@ -534,7 +446,6 @@ class _MyHomePageState extends State<MyHomePage>
                                               ],
                                             ),
                                             const SizedBox(width: 10),
-                                            // Station Info
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment:
@@ -568,7 +479,6 @@ class _MyHomePageState extends State<MyHomePage>
                                               ),
                                             ),
                                             const SizedBox(width: 8),
-                                            // GPRTU Info
                                             SizedBox(
                                               width: 100,
                                               child: Column(
@@ -595,7 +505,6 @@ class _MyHomePageState extends State<MyHomePage>
                                         ),
                                         const Divider(
                                             color: primaryContainerShade),
-                                        // Bottom Action Row
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
@@ -746,62 +655,6 @@ class _MyHomePageState extends State<MyHomePage>
                             ],
                           ),
                           const SizedBox(height: 14),
-                          // Container(
-                          //   height: 50,
-                          //   width: MediaQuery.of(context).size.width,
-                          //   decoration: BoxDecoration(
-                          //     color: Colors.grey.shade200.withOpacity(0.4),
-                          //     border: Border.all(
-                          //       width: 1,
-                          //       color: Colors.grey.shade400.withOpacity(0.5),
-                          //     ),
-                          //     borderRadius: BorderRadius.circular(13),
-                          //   ),
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.all(8.0),
-                          //     child: Row(
-                          //       mainAxisAlignment:
-                          //           MainAxisAlignment.spaceBetween,
-                          //       children: [
-                          //         Padding(
-                          //           padding: const EdgeInsets.all(8.0),
-                          //           child: Row(
-                          //             children: [
-                          //               Text(
-                          //                 "Enter Destination",
-                          //                 style: Theme.of(context)
-                          //                     .textTheme
-                          //                     .bodySmall!
-                          //                     .copyWith(
-                          //                       fontSize: 13,
-                          //                       color: Colors.black54,
-                          //                     ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //         Container(
-                          //           height: 20,
-                          //           width: 20,
-                          //           decoration: BoxDecoration(
-                          //             color: primaryColor,
-                          //             borderRadius: BorderRadius.circular(20),
-                          //           ),
-                          //           child: const Center(
-                          //             child: Icon(
-                          //               Icons.location_on,
-                          //               size: 13,
-                          //               weight: 8,
-                          //               grade: 8,
-                          //               opticalSize: 8,
-                          //               color: Colors.white,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                           TextFormField(
                             controller: destinationController,
                             style:
@@ -810,7 +663,6 @@ class _MyHomePageState extends State<MyHomePage>
                                       color: blackColor,
                                       fontWeight: FontWeight.w500,
                                     ),
-                            //onChanged: (value) => (),
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Enter Destination';

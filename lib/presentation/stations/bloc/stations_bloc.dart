@@ -33,7 +33,6 @@ class StationBloc extends Bloc<StationEvent, StationState> {
         double? userLongitude = locationState.longitude;
         debugPrint("Location Fetched: $userLatitude, $userLongitude");
 
-        // Load from cache first
         final cached = await StationCacheHelper.getCachedStations();
         if (cached.isNotEmpty) {
           emit(StationFetchedState(
@@ -44,14 +43,12 @@ class StationBloc extends Bloc<StationEvent, StationState> {
           ));
         }
 
-        // Then fetch from API
         nearbyStations =
             await stationService.fetchStationsApi(userLatitude, userLongitude);
 
         if (nearbyStations != null && nearbyStations!.isNotEmpty) {
           debugPrint('Stations Fetched');
 
-          // Cache fetched stations
           await StationCacheHelper.cacheStations(nearbyStations!);
 
           return emit(StationFetchedState(
@@ -73,50 +70,4 @@ class StationBloc extends Bloc<StationEvent, StationState> {
       emit(StationFailureState(error: 'Error fetching stations: $error'));
     }
   }
-
-  // Future<void> fetchStations(
-  //     FetchStationEvent event, Emitter<StationState> emit) async {
-  //   emit(StationLoading());
-  //   debugPrint("Stations Loading...");
-
-  //   try {
-  //     final locationState = locationbloc.state;
-  //     debugPrint("LocationBloc State: $locationState");
-
-  //     if (locationState is LocationFetchedState) {
-  //       double? userLatitude = locationState.latitude;
-  //       double? userLongitude = locationState.longitude;
-  //       debugPrint("Location Fetched: $userLatitude, $userLongitude");
-
-  //       if (userLatitude == null || userLongitude == null) {
-  //         debugPrint("Error: Latitude or Longitude is null!");
-  //         emit(StationFailureState(error: "User location not available."));
-  //       }
-
-  //       nearbyStations =
-  //           await stationService.fetchStationsApi(userLatitude, userLongitude);
-  //       if (nearbyStations != null) {
-  //         debugPrint('Stations Fetched');
-  //         return emit(
-  //           StationFetchedState(
-  //             message: 'Stations Fetched Successfuly',
-  //             stations: nearbyStations,
-  //             isLoaded: true,
-  //           ),
-  //         );
-  //       } else if (nearbyStations == null) {
-  //         debugPrint('No nearby stations at your location.');
-  //         emit(StationFailureState(
-  //             error: 'No nearby stations at your location.'));
-  //       } else {
-  //         debugPrint('User location is not available.');
-  //       }
-  //     } else if (locationState is LocationFailure) {
-  //       emit(StationFailureState(error: 'Your location couldnt load'));
-  //     }
-  //   } catch (error) {
-  //     debugPrint(error.toString());
-  //     emit(StationFailureState(error: 'Error fetching stations: $error'));
-  //   }
-  // }
 }

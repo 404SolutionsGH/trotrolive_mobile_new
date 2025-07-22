@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../utils/constants/color constants/colors.dart';
 
 class DialogBoxUtil extends StatelessWidget {

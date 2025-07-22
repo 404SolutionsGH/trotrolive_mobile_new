@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geodesy/geodesy.dart';
 import 'package:trotrolive_mobile_new/data/dio/dio_helper.dart';
 import 'package:trotrolive_mobile_new/utils/constants/api%20constants/api_constants.dart';
-
 import '../model/stations_model.dart';
 
 class StationsRemoteApiService {
@@ -14,7 +13,6 @@ class StationsRemoteApiService {
 
       final response = await DioHelper.getAllData(
         url: stationsUrl,
-        //?station_latitude=5.5768461&station_longitude=-0.3266422',
         queryParameters: {},
       );
 

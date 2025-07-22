@@ -1,4 +1,3 @@
-// lib/theme/theme_data.dart
 import 'package:flutter/material.dart';
 import '../utils/constants/color constants/colors.dart';
 

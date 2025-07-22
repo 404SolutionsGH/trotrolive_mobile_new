@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trotrolive_mobile_new/utils/constants/color%20constants/colors.dart';
 import 'package:trotrolive_mobile_new/utils/constants/image%20constants/image_constants.dart';
-
 import '../../../helpers/text_widgets.dart';
 
 class StoriesPage extends StatelessWidget {
@@ -16,7 +15,6 @@ class StoriesPage extends StatelessWidget {
         preferredSize: const Size.fromHeight(130),
         child: Container(
           decoration: BoxDecoration(
-            //color: primaryColor,
             gradient: LinearGradient(
               begin: Alignment.center,
               end: Alignment.bottomCenter,

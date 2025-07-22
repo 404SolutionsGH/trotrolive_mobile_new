@@ -35,7 +35,7 @@ class StationModel {
         ],
         image: json['image_url'],
         isBusStop: json['is_bus_stop'] ?? false,
-        city: 0, // Not in JSON
+        city: 0,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         clickCount: 0,

@@ -5,9 +5,6 @@ import '../../../../utils/constants/api constants/api_constants.dart';
 import '../model/trips_model.dart';
 
 class TripsRemoteApiService {
-  /// Fetch all paginated trips from the API until no `next` is available
-  ///
-
   Future<PaginatedTripsResponse?> fetchTripsApi(
     String? startingPoint,
     String? destination, {

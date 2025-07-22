@@ -7,7 +7,6 @@ part 'trips_state.dart';
 
 class TripsBloc extends Bloc<TripsEvent, TripsState> {
   final tripService = TripsRemoteApiService();
-  //final LocationBloc locationbloc;
   bool isLoadingMore = false;
 
   TripsBloc() : super(TripsInitial()) {

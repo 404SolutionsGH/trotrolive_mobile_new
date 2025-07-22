@@ -1,9 +1,7 @@
-// lib/theme/bloc/theme_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
 import 'theme_event.dart';
 import 'theme_state.dart';
-import '../theme_data.dart'; // we'll create this next
+import '../theme_data.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   bool isDark = false;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants/color constants/colors.dart';
 
-// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
   String text;
   final void Function() onpressed;
@@ -46,12 +45,6 @@ class CustomButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // SizedBox.shrink() ??
-              //     SpinKitCircle(
-              //       color: whiteColor,
-              //       size: 25,
-              //     ),
-              // SizedBox(width: 8),
               Text(
                 text,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-
 import '../../../utils/constants/color constants/colors.dart';
 import 'model/onboarding_model.dart';
 
