@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:trotrolive_mobile_new/presentation/stations/bloc/stations_bloc.dart';
 import '../../../utils/constants/color constants/colors.dart';
+import '../../location/bloc/location_bloc.dart';
 import 'model/onboarding_model.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -18,6 +21,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void initState() {
     _controller = PageController(initialPage: 0);
+
+    // final locationState = BlocProvider.of<LocationBloc>(context).state;
+    // if (locationState is LocationFetchedState) {
+    //   BlocProvider.of<StationBloc>(context).add(FetchStationEvent(
+    //     startingPoint: "${locationState.latitude},${locationState.longitude}",
+    //   ));
+    // }
+
     super.initState();
   }
 

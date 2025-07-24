@@ -11,9 +11,12 @@ class TripsRemoteApiService {
     String? url,
   }) async {
     try {
-      final requestUrl = url ??
-          '$tripsUrl?startingPoint=$startingPoint&destination=$destination';
+      final encodedStart = Uri.encodeComponent(startingPoint ?? '');
+      final encodedDest = Uri.encodeComponent(destination ?? '');
 
+      final requestUrl = url ??
+          '$tripsUrl?startingPoint=$encodedStart&destination=$encodedDest';
+      debugPrint("Requesting: $requestUrl");
       final response = await DioHelper.getAllData(
         url: requestUrl,
         queryParameters: {},

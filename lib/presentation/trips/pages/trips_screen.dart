@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:trotrolive_mobile_new/helpers/animation/showup_animation.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/model/trips_model.dart';
 
@@ -87,7 +88,7 @@ class _TripsPageState extends State<TripsPage>
     return BlocConsumer<TripsBloc, TripsState>(
       listener: (BuildContext context, state) {
         if (state is TripsFailureState) {
-          debugPrint("Fetch Failed");
+          debugPrint("Fetch Failed ${state.error}");
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -194,23 +195,16 @@ class _TripsPageState extends State<TripsPage>
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (state is TripsFetchedState) SizedBox(height: 30),
-                      Container(
+                      SizedBox(height: 30),
+                      SizedBox(
                         height: 40,
-                        color: barBg.withOpacity(0.5),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              headingTextMedium(
-                                context,
-                                'Trips Available',
-                                FontWeight.w600,
-                                15,
-                              ),
                               Container(
-                                height: 30,
+                                height: 40,
                                 width: 130,
                                 decoration: BoxDecoration(
                                   // color: secondaryColor3.withOpacity(0.4),
@@ -224,10 +218,10 @@ class _TripsPageState extends State<TripsPage>
                                   children: [
                                     headingTextMedium(
                                       context,
-                                      'Found ${trips.length} Trips',
+                                      '${trips.length} trips found!',
                                       FontWeight.w600,
                                       12,
-                                      Colors.green,
+                                      blackColor,
                                     ),
                                   ],
                                 ),
@@ -236,353 +230,365 @@ class _TripsPageState extends State<TripsPage>
                           ),
                         ),
                       ),
-                      SizedBox(height: 15),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          scrollDirection: Axis.vertical,
-                          itemCount: trips.length + (hasMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == trips.length) {
-                              return state.nextUrl != null &&
-                                      _showMoreInfoButton
-                                  ? FadeTransition(
-                                      opacity: _fadeAnimation,
-                                      child: Center(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            context.read<TripsBloc>().add(
-                                                  LoadMoreTripsEvent(
-                                                    nextUrl: state.nextUrl!,
-                                                    currentTrips:
-                                                        state.trips ?? [],
-                                                  ),
-                                                );
-                                          },
-                                          child: Container(
-                                            height: 30,
-                                            width: 100,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(35),
-                                              // border: Border.all(
-                                              //     color: primaryColorDeep),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                'Load more',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium!
-                                                    .copyWith(
-                                                      color: primaryColorDeep,
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                      SizedBox(height: 5),
+                      RefreshIndicator(
+                        onRefresh: () async {
+                          context.read<TripsBloc>()..add(FetchTripEvent());
+                        },
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            scrollDirection: Axis.vertical,
+                            itemCount: trips.length + (hasMore ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == trips.length) {
+                                return state.nextUrl != null &&
+                                        _showMoreInfoButton
+                                    ? FadeTransition(
+                                        opacity: _fadeAnimation,
+                                        child: Center(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              context.read<TripsBloc>().add(
+                                                    LoadMoreTripsEvent(
+                                                      nextUrl: state.nextUrl!,
+                                                      currentTrips:
+                                                          state.trips ?? [],
                                                     ),
+                                                  );
+                                            },
+                                            child: Container(
+                                              height: 30,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(35),
+                                                // border: Border.all(
+                                                //     color: primaryColorDeep),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  'Load more',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium!
+                                                      .copyWith(
+                                                        color: primaryColorDeep,
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
+                                      )
+                                    : SizedBox.shrink();
+                              }
+                              final trip = trips[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 160,
+                                      width: MediaQuery.of(context).size.width,
+                                      // padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomLeft,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            primaryColor.withOpacity(0.95),
+                                            primaryColorDeep,
+                                          ],
+                                        ),
+                                        border: Border.all(
+                                          color: primaryContainerShade,
+                                          width: 2.5,
+                                        ),
+                                        borderRadius: BorderRadius.circular(17),
                                       ),
-                                    )
-                                  : SizedBox.shrink();
-                            }
-                            final trip = trips[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 160,
-                                    width: MediaQuery.of(context).size.width,
-                                    // padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      border: Border.all(
-                                        color: primaryContainerShade,
-                                        width: 2.5,
-                                      ),
-                                      borderRadius: BorderRadius.circular(17),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 115,
-                                          child: Container(
-                                            height: 150,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(14),
-                                                topRight: Radius.circular(14),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 115,
+                                            child: Container(
+                                              height: 150,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(14),
+                                                  topRight: Radius.circular(14),
+                                                ),
+                                                color: whiteColor,
                                               ),
-                                              color: whiteColor,
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5.0,
-                                                      vertical: 15),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 95,
-                                                    width: 40,
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          height: 22,
-                                                          width: 22,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.blue,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25),
-                                                          ),
-                                                          child: Center(
-                                                            child: Icon(
-                                                              MingCute
-                                                                  .location_fill,
-                                                              color: whiteColor,
-                                                              size: 15,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Icon(
-                                                          Icons.circle,
-                                                          color: outlineGrey,
-                                                          size: 6,
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Icon(
-                                                          Icons.circle,
-                                                          color: outlineGrey,
-                                                          size: 6,
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Icon(
-                                                          Icons.circle,
-                                                          color: outlineGrey,
-                                                          size: 6,
-                                                        ),
-                                                        SizedBox(height: 3),
-                                                        Container(
-                                                          height: 22,
-                                                          width: 22,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.red,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25),
-                                                          ),
-                                                          child: Center(
-                                                            child: Icon(
-                                                              Icons
-                                                                  .location_searching_rounded,
-                                                              color: whiteColor,
-                                                              size: 15,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      headingTextMedium(
-                                                        context,
-                                                        trip.startStation.name
-                                                                .toString() ??
-                                                            '',
-                                                        FontWeight.w600,
-                                                        14,
-                                                      ),
-                                                      subheadingText(
-                                                        context,
-                                                        trip.startStation
-                                                                    .isBusStop ==
-                                                                true
-                                                            ? 'Bus Stop'
-                                                            : 'Not Bus Stop',
-                                                        align: TextAlign.start,
-                                                        size: 10,
-                                                      ),
-                                                      SizedBox(height: 20),
-                                                      headingTextMedium(
-                                                        context,
-                                                        trip.destination.name
-                                                                .toString() ??
-                                                            '',
-                                                        FontWeight.w600,
-                                                        14,
-                                                      ),
-                                                      Row(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5.0,
+                                                        vertical: 15),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 95,
+                                                      width: 40,
+                                                      child: Column(
                                                         children: [
-                                                          subheadingText(
-                                                            context,
-                                                            trip.destination
-                                                                        .isBusStop ==
-                                                                    true
-                                                                ? 'Bus Stop'
-                                                                : 'Not Bus Stop',
-                                                            align:
-                                                                TextAlign.start,
-                                                            size: 10,
+                                                          Container(
+                                                            height: 22,
+                                                            width: 22,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.blue,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25),
+                                                            ),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                MingCute
+                                                                    .location_fill,
+                                                                color:
+                                                                    whiteColor,
+                                                                size: 15,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 3),
+                                                          Icon(
+                                                            Icons.circle,
+                                                            color: outlineGrey,
+                                                            size: 6,
+                                                          ),
+                                                          SizedBox(height: 3),
+                                                          Icon(
+                                                            Icons.circle,
+                                                            color: outlineGrey,
+                                                            size: 6,
+                                                          ),
+                                                          SizedBox(height: 3),
+                                                          Icon(
+                                                            Icons.circle,
+                                                            color: outlineGrey,
+                                                            size: 6,
+                                                          ),
+                                                          SizedBox(height: 3),
+                                                          Container(
+                                                            height: 22,
+                                                            width: 22,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors.red,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25),
+                                                            ),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons
+                                                                    .location_searching_rounded,
+                                                                color:
+                                                                    whiteColor,
+                                                                size: 15,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        headingTextMedium(
+                                                          context,
+                                                          trip.startStation.name
+                                                                  .toString() ??
+                                                              '',
+                                                          FontWeight.w600,
+                                                          14,
+                                                        ),
+                                                        subheadingText(
+                                                          context,
+                                                          trip.startStation
+                                                                      .isBusStop ==
+                                                                  true
+                                                              ? 'Bus Stop'
+                                                              : 'Not Bus Stop',
+                                                          align:
+                                                              TextAlign.start,
+                                                          size: 10,
+                                                        ),
+                                                        SizedBox(height: 20),
+                                                        headingTextMedium(
+                                                          context,
+                                                          trip.destination.name
+                                                                  .toString() ??
+                                                              '',
+                                                          FontWeight.w600,
+                                                          14,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            subheadingText(
+                                                              context,
+                                                              trip.destination
+                                                                          .isBusStop ==
+                                                                      true
+                                                                  ? 'Bus Stop'
+                                                                  : 'Not Bus Stop',
+                                                              align: TextAlign
+                                                                  .start,
+                                                              size: 10,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
+                                            // Container(
+                                            //   height: 110,
+                                            //   width: 1,
+                                            //   color: outlineGrey,
+                                            // ),
+                                            // SizedBox(width: 8),
+                                            // Container(
+                                            //   height: 120,
+                                            //   width: 100,
+                                            //   decoration: BoxDecoration(),
+                                            //   child: Column(
+                                            //     mainAxisAlignment:
+                                            //         MainAxisAlignment.start,
+                                            //     crossAxisAlignment:
+                                            //         CrossAxisAlignment.start,
+                                            //     children: [
+                                            //       SizedBox(height: 5),
+                                            //       subheadingText(
+                                            //         context,
+                                            //         'TRIP AMOUNT',
+                                            //         TextAlign.start,
+                                            //         11,
+                                            //       ),
+                                            //       SizedBox(height: 3),
+                                            //       Row(
+                                            //         children: [
+                                            //           CediSign(
+                                            //             size: 21,
+                                            //             weight: FontWeight.bold,
+                                            //           ),
+                                            //           SizedBox(width: 1),
+                                            //           headingTextMedium(
+                                            //             context,
+                                            //             '9.50p',
+                                            //             FontWeight.w600,
+                                            //             21,
+                                            //           ),
+                                            //         ],
+                                            //       ),
+                                            //       SizedBox(height: 1),
+                                            //       subheadingText(
+                                            //         context,
+                                            //         'TAKE NOTE!!',
+                                            //         TextAlign.start,
+                                            //         11,
+                                            //       ),
+                                            //       SizedBox(height: 2),
+                                            //       subheadingText(
+                                            //         context,
+                                            //         'ALL FARES ARE ENDORSED BY THE GPRTU.',
+                                            //         TextAlign.start,
+                                            //         10,
+                                            //         3,
+                                            //         Colors.blue,
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
                                           ),
-                                          // Container(
-                                          //   height: 110,
-                                          //   width: 1,
-                                          //   color: outlineGrey,
+                                          // Divider(
+                                          //   color: primaryContainerShade,
                                           // ),
-                                          // SizedBox(width: 8),
-                                          // Container(
-                                          //   height: 120,
-                                          //   width: 100,
-                                          //   decoration: BoxDecoration(),
-                                          //   child: Column(
-                                          //     mainAxisAlignment:
-                                          //         MainAxisAlignment.start,
-                                          //     crossAxisAlignment:
-                                          //         CrossAxisAlignment.start,
-                                          //     children: [
-                                          //       SizedBox(height: 5),
-                                          //       subheadingText(
-                                          //         context,
-                                          //         'TRIP AMOUNT',
-                                          //         TextAlign.start,
-                                          //         11,
-                                          //       ),
-                                          //       SizedBox(height: 3),
-                                          //       Row(
-                                          //         children: [
-                                          //           CediSign(
-                                          //             size: 21,
-                                          //             weight: FontWeight.bold,
-                                          //           ),
-                                          //           SizedBox(width: 1),
-                                          //           headingTextMedium(
-                                          //             context,
-                                          //             '9.50p',
-                                          //             FontWeight.w600,
-                                          //             21,
-                                          //           ),
-                                          //         ],
-                                          //       ),
-                                          //       SizedBox(height: 1),
-                                          //       subheadingText(
-                                          //         context,
-                                          //         'TAKE NOTE!!',
-                                          //         TextAlign.start,
-                                          //         11,
-                                          //       ),
-                                          //       SizedBox(height: 2),
-                                          //       subheadingText(
-                                          //         context,
-                                          //         'ALL FARES ARE ENDORSED BY THE GPRTU.',
-                                          //         TextAlign.start,
-                                          //         10,
-                                          //         3,
-                                          //         Colors.blue,
-                                          //       ),
-                                          //     ],
-                                          //   ),
-                                          // ),
-                                        ),
-                                        // Divider(
-                                        //   color: primaryContainerShade,
-                                        // ),
-                                        SizedBox(height: 10),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 17.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    MingCute.bus_line,
-                                                    color: outlineGrey,
-                                                    size: 17,
-                                                  ),
-                                                  SizedBox(width: 3),
-                                                  subheadingText(
-                                                    context,
-                                                    'Transport Type: ',
-                                                    align: TextAlign.start,
-                                                    size: 12,
-                                                    maxlines: 1,
-                                                    color: whiteColor,
-                                                  ),
-                                                  subheadingText(
-                                                    context,
-                                                    'Trotro',
-                                                    align: TextAlign.start,
-                                                    size: 12,
-                                                    maxlines: 2,
-                                                    color: secondaryColor3,
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    MingCute.location_2_line,
-                                                    color: outlineGrey,
-                                                    size: 17,
-                                                  ),
-                                                  SizedBox(width: 3),
-                                                  subheadingText(
-                                                    context,
-                                                    trip.route.source ?? '',
-                                                    align: TextAlign.start,
-                                                    size: 11,
-                                                    maxlines: 1,
-                                                    color: secondaryColor3,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                          SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 17.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                // Row(
+                                                //   children: [
+                                                //     Icon(
+                                                //       MingCute.bus_line,
+                                                //       color: secondaryColor4,
+                                                //       size: 17,
+                                                //     ),
+                                                //     SizedBox(width: 3),
+                                                //     subheadingText(
+                                                //       context,
+                                                //       'Type: ',
+                                                //       align: TextAlign.start,
+                                                //       size: 12,
+                                                //       maxlines: 1,
+                                                //       color: whiteColor,
+                                                //     ),
+                                                //     subheadingText(
+                                                //       context,
+                                                //       'Trotro',
+                                                //       align: TextAlign.start,
+                                                //       size: 12,
+                                                //       maxlines: 2,
+                                                //       color: Colors.green,
+                                                //     ),
+                                                //   ],
+                                                // ),
+
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(width: 3),
+                                                    subheadingText(
+                                                      context,
+                                                      trip.route.longName ?? '',
+                                                      align: TextAlign.start,
+                                                      size: 12,
+                                                      maxlines: 1,
+                                                      color: secondaryColor4,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -662,8 +668,61 @@ class _TripsPageState extends State<TripsPage>
             ),
           ),
           extendBody: true,
-          body: Center(
-            child: Text('Loading trips....'),
+          body: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: ListView.builder(
+                itemCount: 8,
+                itemBuilder: (_, __) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 12,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Container(
+                                  height: 12,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.5,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         );
       },

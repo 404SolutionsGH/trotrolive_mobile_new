@@ -11,6 +11,8 @@ class FetchStationEvent extends StationEvent {
   });
 }
 
+class ForceRefreshStationEvent extends FetchStationEvent {}
+
 class LoadMoreStationEvent extends StationEvent {
   final String? nextUrl;
   final List<StationModel>? currentTrips;

@@ -13,15 +13,21 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     on<FetchTripEvent>(fetchTrips);
     on<LoadMoreTripsEvent>(loadMoreTrips);
   }
-
+/*
   Future<void> fetchTrips(
       FetchTripEvent event, Emitter<TripsState> emit) async {
     try {
       emit(TripsLoading());
       debugPrint("Trips Loading...");
 
-      final String startingPoint = event.startingPoint!.trim().toLowerCase();
-      final String destination = event.destination!.trim().toLowerCase();
+      final String? startingPoint = event.startingPoint;
+      final String? destination = event.destination;
+
+      if (startingPoint == null || destination == null) {
+        emit(TripsFailureState(
+            error: 'Starting point or destination is missing.'));
+        return;
+      }
 
       List<TripsModel> allTrips = [];
       String? nextUrl;
@@ -77,14 +83,104 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
         nextUrl: nextUrl,
       ));
     } catch (e) {
+      debugPrint(e.toString());
+      emit(TripsFailureState(error: 'Error fetching trips: $e'));
+    }
+  }
+*/
+// ✅ Normalize station names for reliable comparison
+  String normalize(String name) {
+    return name
+        .replaceAll(RegExp(r'terminal', caseSensitive: false), '')
+        .trim()
+        .toLowerCase();
+  }
+
+  Future<void> fetchTrips(
+      FetchTripEvent event, Emitter<TripsState> emit) async {
+    try {
+      emit(TripsLoading());
+      debugPrint("🚦 Trips Loading...");
+
+      final String? startingPoint = event.startingPoint;
+      final String? destination = event.destination;
+
+      if (startingPoint == null || destination == null) {
+        return debugPrint('Starting point or destination is missing');
+      }
+
+      debugPrint("🧭 Params: start=$startingPoint, dest=$destination");
+
+      final inputStart = normalize(startingPoint);
+      final inputDest = normalize(destination);
+
+      List<TripsModel> allTrips = [];
+      String? nextUrl;
+      int pageCount = 0;
+      const int maxPages = 5;
+
+      do {
+        final response = await tripService.fetchTripsApi(
+          startingPoint,
+          destination,
+          url: nextUrl,
+        );
+
+        if (response != null) {
+          allTrips.addAll(response.trips);
+          nextUrl = response.nextUrl;
+          pageCount++;
+        } else {
+          break;
+        }
+      } while (nextUrl != null && pageCount < maxPages);
+
+      final Set<TripsModel> uniqueTrips = {};
+
+      for (var trip in allTrips) {
+        final tripStart = normalize(trip.startStation.name);
+        final tripDest = normalize(trip.destination.name);
+
+        // Match both directions
+        if ((tripStart == inputStart && tripDest == inputDest) ||
+            (tripStart == inputDest && tripDest == inputStart)) {
+          uniqueTrips.add(trip);
+        }
+      }
+
+      // Optional fallback: broader matching
+      if (uniqueTrips.isEmpty) {
+        for (var trip in allTrips) {
+          final tripStart = normalize(trip.startStation.name);
+          final tripDest = normalize(trip.destination.name);
+
+          if (tripStart.contains(inputStart) ||
+              tripDest.contains(inputDest) ||
+              tripStart.contains(inputDest) ||
+              tripDest.contains(inputStart)) {
+            uniqueTrips.add(trip);
+          }
+        }
+      }
+
+      debugPrint("🎯 Trips Fetched: ${uniqueTrips.length}");
+      for (var trip in uniqueTrips) {
+        debugPrint("📍 ${trip.startStation.name} → ${trip.destination.name}");
+      }
+
+      emit(TripsFetchedState(
+        message: "Trips Fetched Successfully",
+        trips: uniqueTrips.toList(),
+        nextUrl: nextUrl,
+      ));
+    } catch (e) {
+      debugPrint("❌ Exception: $e");
       emit(TripsFailureState(error: 'Error fetching trips: $e'));
     }
   }
 
   Future<void> loadMoreTrips(
-    LoadMoreTripsEvent event,
-    Emitter<TripsState> emit,
-  ) async {
+      LoadMoreTripsEvent event, Emitter<TripsState> emit) async {
     if (isLoadingMore) return;
     isLoadingMore = true;
     emit(TripsLoadingMore());
