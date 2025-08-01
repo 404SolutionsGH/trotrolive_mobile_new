@@ -64,7 +64,6 @@ final ThemeData darkTheme = ThemeData(
   colorScheme: const ColorScheme.dark(
     primary: primaryColor,
     secondary: secondaryColor,
-    background: blackColor,
     surface: blackColorShade,
   ),
   bottomAppBarTheme: BottomAppBarTheme(color: blackColor),

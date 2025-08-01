@@ -57,6 +57,7 @@ dependencies:
   cookie_jar: ^4.0.8
   image_picker: ^1.1.2
   marquee: ^2.3.0
+  flutter_map: ^6.1.0
 
 dev_dependencies:
   flutter_test:

@@ -7,6 +7,7 @@ import '../../presentation/home/pages/main_home.dart';
 import '../../presentation/intro/onboarding screen/onboarding_screen.dart';
 import '../../presentation/intro/splash screen/pages/splash_screen.dart';
 import '../../presentation/intro/welcome screen/welcome_screen.dart';
+import '../../presentation/trips/components/map.dart';
 import '../../test_file.dart';
 import 'route_transition.dart';
 
@@ -37,6 +38,20 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case '/tripsInfo':
       return slideFromRight(TripsMainPage());
+
+    case '/map':
+      final args = settings.arguments as Map<String, dynamic>;
+      return slideFromRight(
+        MapDirectionScreen(
+          startLat: args['startLat'],
+          startLong: args['startLong'],
+          desLat: args['desLat'],
+          desLong: args['desLong'],
+          start: args['start'],
+          dest: args['dest'],
+          fare: args['fare'],
+        ),
+      );
 
     default:
       return MaterialPageRoute(

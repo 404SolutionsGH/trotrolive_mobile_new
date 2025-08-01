@@ -53,45 +53,70 @@ class TripsModel {
 }
 
 class Ation {
-  String name;
-  dynamic stationAddress;
-  List<double> coordinates;
-  dynamic image;
-  bool isBusStop;
-  int city;
-  DateTime createdAt;
-  DateTime updatedAt;
+  final String name;
+  final String stationAddress;
+  final double stationLatitude;
+  final double stationLongitude;
+  final String? image;
+  final bool isBusStop;
+  final int city;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   Ation({
     required this.name,
     required this.stationAddress,
-    required this.coordinates,
-    required this.image,
+    required this.stationLatitude,
+    required this.stationLongitude,
+    this.image,
     required this.isBusStop,
     required this.city,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory Ation.fromJson(Map<String, dynamic> json) => Ation(
-        name: json["name"] ?? "",
-        stationAddress: json["station_address"] ?? "",
-        coordinates: json["coordinates"] != null
-            ? List<double>.from(json["coordinates"].map((x) => x?.toDouble()))
-            : [],
-        image: json["image"],
-        isBusStop: json["is_bus_stop"] ?? false,
-        city: json["city"] ?? 0,
-        createdAt:
-            DateTime.tryParse(json["created_at"] ?? "") ?? DateTime.now(),
-        updatedAt:
-            DateTime.tryParse(json["updated_at"] ?? "") ?? DateTime.now(),
-      );
+  factory Ation.fromJson(Map<String, dynamic> json) {
+    return Ation(
+      name: json["name"]?.toString() ?? '',
+      stationAddress: json["station_address"]?.toString() ?? '',
+      stationLatitude: _parseDouble(json["station_latitude"]) ?? 0.0,
+      stationLongitude: _parseDouble(json["station_longitude"]) ?? 0.0,
+      image: json["image"]?.toString(),
+      isBusStop: json["is_bus_stop"] == true || json["is_bus_stop"] == 'true',
+      city: _parseInt(json["city"]) ?? 0,
+      createdAt: _parseDateTime(json["created_at"]) ?? DateTime.now(),
+      updatedAt: _parseDateTime(json["updated_at"]) ?? DateTime.now(),
+    );
+  }
+
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    if (value is String) return DateTime.tryParse(value);
+    return null;
+  }
 
   Map<String, dynamic> toJson() => {
         "name": name,
         "station_address": stationAddress,
-        "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
+        "station_latitude": stationLatitude,
+        "station_longitude": stationLongitude,
         "image": image,
         "is_bus_stop": isBusStop,
         "city": city,

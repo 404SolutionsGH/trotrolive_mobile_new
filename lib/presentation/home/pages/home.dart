@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:trotrolive_mobile_new/presentation/stations/repository/model/stations_model.dart';
-import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/shimmer_effect.dart';
 import '../../../utils/constants/color constants/colors.dart';

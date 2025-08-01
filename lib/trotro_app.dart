@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'helpers/widgets/generate_route.dart';
 import 'presentation/intro/splash screen/pages/splash_screen.dart';
-import 'theme/bloc/theme_bloc.dart';
-import 'theme/bloc/theme_state.dart';
-import 'theme/theme_data.dart';
 import 'utils/constants/color constants/colors.dart';
 
 class TrotroApp extends StatelessWidget {
