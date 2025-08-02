@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trotrolive_mobile_new/repository/cache/station_cache_helper.dart';
 import '../components/auth_exception.dart';
 import '../repository/create_account_helper.dart';
 import '../repository/data model/user_model.dart';
@@ -61,9 +62,9 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
 
       final user = UserModel(
         id: UserHelper.firebaseUser!.uid,
-        fullname: event.fullName,
-        email: event.email,
+        username: event.username,
         phone: event.phone,
+        email: event.email,
         password: event.password,
       );
 
@@ -127,6 +128,8 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       emit(AuthLogoutSuccesState(message: 'User Logged out Succesfuly!!'));
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('authToken');
+      StationCacheHelper.clearCache();
+
       debugPrint('User Logged out Succesfuly!!');
       debugPrint('AuthToken removed !!');
     } on FirebaseAuthException catch (e) {

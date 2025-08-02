@@ -3,13 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
   String? id;
-  late String? fullname;
+  late String? username;
   late String? email;
   late String? phone;
   late String? password;
   UserModel({
     this.id,
-    required this.fullname,
+    required this.username,
     required this.email,
     required this.phone,
     required this.password,
@@ -18,7 +18,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'fullname': fullname,
+      'username': username,
       'email': email,
       'phone': phone,
       'password': password,
@@ -27,7 +27,7 @@ class UserModel {
 
   UserModel.defaultModel() {
     id = null;
-    fullname = 'Default fullname';
+    username = 'Default username';
     email = 'default@example.com';
     phone = '233################';
     password = 'Default Password';
@@ -37,7 +37,7 @@ class UserModel {
     return UserModel(
       id: map['id'],
       email: map['email'],
-      fullname: map['fullname'],
+      username: map['username'],
       phone: map['phone'],
       password: map['password'],
     );
@@ -49,7 +49,7 @@ class UserModel {
       final data = document.data()!;
       return UserModel(
         id: FirebaseAuth.instance.currentUser!.uid,
-        fullname: data['fullname'],
+        username: data['username'],
         email: data['email'],
         phone: data['phone'],
         password: data['password'],
