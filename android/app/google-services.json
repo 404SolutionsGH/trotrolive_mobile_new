@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "877338605609",
+    "project_id": "trotro-live-mobile-new",
+    "storage_bucket": "trotro-live-mobile-new.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877338605609:android:c070760a94e6a8aed18438",
+        "android_client_info": {
+          "package_name": "com.example.trotrolive_mobile_new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7oLuulv-SlSyS1NqyD7a2RbXzfwbdRwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
