@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trotrolive_mobile_new/presentation/stories/bloc/stories_bloc.dart';
 import 'presentation/authentication screens/bloc/auth_bloc.dart';
 import 'presentation/location/bloc/location_bloc.dart';
 import 'presentation/stations/bloc/stations_bloc.dart';
@@ -24,6 +25,9 @@ class TrotroAppBlocs extends StatelessWidget {
       ),
       BlocProvider(
         create: (context) => TripsBloc()..add(FetchTripEvent()),
+      ),
+      BlocProvider(
+        create: (context) => StoriesBloc()..add(FetchStoriesEvent()),
       ),
       // BlocProvider(create: (context) => ThemeBloc()),
     ], child: TrotroApp());

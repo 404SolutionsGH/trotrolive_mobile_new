@@ -31,12 +31,12 @@ headingText(context, String text) {
 }
 
 headingTextMedium(context, String text,
-    [FontWeight? weight, double? size, Color? color]) {
+    [FontWeight? weight, double? size, Color? color, int? lines]) {
   return Text(
     textAlign: TextAlign.start,
     overflow: TextOverflow.visible,
     softWrap: true,
-    maxLines: 2,
+    maxLines: lines ?? 20,
     text,
     style: Theme.of(context).textTheme.bodySmall!.copyWith(
           color: color ?? blackColor,
@@ -171,15 +171,16 @@ subheadingSmallBoldText(context, String text, double size, [Color? color]) {
   );
 }
 
-subheadingTextMedium(context, String text, double? size) {
+subheadingTextMedium(context, String text, double? size,
+    [Color? color, int? lines]) {
   return Text(
     textAlign: TextAlign.start,
-    overflow: TextOverflow.visible,
-    maxLines: 4,
+    overflow: TextOverflow.ellipsis,
+    maxLines: lines ?? 5,
     text,
     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          color: subtitleColor,
-          fontSize: size ?? 15,
+          color: color ?? subtitleColor,
+          fontSize: size ?? 16,
         ),
   );
 }

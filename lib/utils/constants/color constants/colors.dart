@@ -11,7 +11,8 @@ const Color primaryContainerShade = Color.fromARGB(190, 228, 235, 252);
 const Color primarySucessShade = Color.fromARGB(189, 228, 252, 229);
 const Color primarySucessShade2 = Color.fromARGB(189, 228, 252, 229);
 const Color secondaryColorB = Color.fromRGBO(255, 255, 255, 9);
-Color secondaryColor2 = Colors.grey[300]!.withOpacity(0.28);
+Color secondaryColor2 =
+    const Color.fromARGB(255, 187, 204, 206).withOpacity(0.28);
 const Color backgroundColor = Colors.black;
 const whiteColor = Colors.white;
 const iconGrey = Color(0xff767676);

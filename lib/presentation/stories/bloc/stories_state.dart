@@ -7,14 +7,18 @@ class StoriesInitial extends StoriesState {}
 class StoriesLoading extends StoriesState {}
 
 class StoriesFetchedState extends StoriesState {
-  String message;
+  final StoryResponse stories;
+  final String message;
+
   StoriesFetchedState({
+    required this.stories,
     required this.message,
   });
 }
 
 class StoriesFailureState extends StoriesState {
-  String error;
+  final String error;
+
   StoriesFailureState({
     required this.error,
   });

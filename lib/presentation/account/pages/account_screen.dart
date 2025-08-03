@@ -40,7 +40,7 @@ class _AccountPageState extends State<AccountPage> {
             );
           });
         } else if (state is AuthLogoutSuccesState) {
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.pushReplacementNamed(context, '/onboarding');
         }
       },
       builder: (BuildContext context, AuthState state) {
@@ -392,7 +392,62 @@ class _AccountPageState extends State<AccountPage> {
                       SizedBox(height: 20),
                       ListTile(
                         onTap: () {
-                          context.read<AuthBloc>().add(LogoutEvent());
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(8.0),
+                                    bottom: Radius.circular(8),
+                                  ),
+                                ),
+                                title: Center(
+                                  child: headingTextMedium(
+                                    context,
+                                    'Confirm Action',
+                                    FontWeight.bold,
+                                    16,
+                                  ),
+                                ),
+                                content: headingTextMedium(
+                                  context,
+                                  'Are you sure you want to log out?',
+                                  FontWeight.w500,
+                                  12,
+                                ),
+                                actions: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      context
+                                          .read<AuthBloc>()
+                                          .add(LogoutEvent());
+                                    },
+                                    child: headingTextMedium(
+                                      context,
+                                      'Confirm',
+                                      FontWeight.w600,
+                                      12,
+                                      iconGrey,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: headingTextMedium(
+                                      context,
+                                      'Cancel',
+                                      FontWeight.w600,
+                                      12,
+                                      Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                         dense: true,
                         horizontalTitleGap: 12,

@@ -59,11 +59,11 @@ class _SplashScreenState extends State<SplashScreen>
     return BlocListener<AuthBloc, AuthState>(
       listener: (BuildContext context, state) async {
         if (state is AuthenticatedState) {
-          await Future.delayed(const Duration(seconds: 3));
+          await Future.delayed(const Duration(seconds: 2));
           Navigator.pushNamedAndRemoveUntil(
               context, '/mainhome', (route) => false);
         } else if (state is UnAuthenticatedState) {
-          await Future.delayed(const Duration(seconds: 3));
+          await Future.delayed(const Duration(seconds: 2));
           Navigator.pushNamedAndRemoveUntil(
               context, '/onboarding', (route) => false);
         }

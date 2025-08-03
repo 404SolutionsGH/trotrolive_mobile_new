@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geodesy/geodesy.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:trotrolive_mobile_new/helpers/text_widgets.dart';
 import 'package:trotrolive_mobile_new/helpers/widgets/cedi_widget.dart';
+import '../../../helpers/animation/showup_animation.dart';
 import '../../../utils/constants/color constants/colors.dart';
-import '../../location/bloc/location_bloc.dart';
+import '../repository/data/fetch_polylines_service.dart';
 
 class MapDirectionScreen extends StatefulWidget {
   final double? startLat;
@@ -36,6 +34,7 @@ class MapDirectionScreen extends StatefulWidget {
 class _MapDirectionScreenState extends State<MapDirectionScreen> {
   bool isLoading = true;
   LatLng initialCenter = const LatLng(0.0, 0.0);
+  PolylineRemoteApiService lineService = PolylineRemoteApiService();
 
   @override
   void initState() {
@@ -94,7 +93,7 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
         onTap: () {},
         child: Container(
           width: double.infinity,
-          height: 350,
+          height: 280,
           decoration: const BoxDecoration(
             color: whiteColor,
           ),
@@ -103,237 +102,204 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 5),
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: subtitleColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(width: 10),
-                      Container(
-                        height: 130,
-                        width: 250,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              leading: Icon(
-                                Icons.my_location_rounded,
-                                color: primaryColorDeep,
-                                size: 30,
+                ShowUpAnimation(
+                  delay: 300,
+                  child: Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: secondaryColor2,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(width: 10),
+                        Container(
+                          height: 130,
+                          width: 250,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                leading: Image.asset(
+                                  height: 30,
+                                  width: 30,
+                                  'assets/pngs/place_marker_48px.png',
+                                ),
+                                title: headingTextMedium(
+                                  context,
+                                  widget.start ?? '',
+                                  FontWeight.w600,
+                                  13,
+                                ),
                               ),
-                              title: headingTextMedium(
-                                context,
-                                widget.start ?? '',
-                                FontWeight.w600,
-                                13,
+                              Divider(
+                                color: iconGrey.withOpacity(0.5),
+                                thickness: 0.5,
                               ),
-                            ),
-                            Divider(
-                              color: iconGrey.withOpacity(0.5),
-                              thickness: 0.5,
-                            ),
-                            ListTile(
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              leading: Icon(
-                                MingCute.location_line,
-                                color: primaryColorDeep,
-                                size: 30,
+                              ListTile(
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                leading: Image.asset(
+                                  height: 30,
+                                  width: 30,
+                                  'assets/pngs/bus_stop_48px.png',
+                                ),
+                                title: headingTextMedium(
+                                  context,
+                                  widget.dest ?? '',
+                                  FontWeight.w600,
+                                  13,
+                                ),
                               ),
-                              title: headingTextMedium(
-                                context,
-                                widget.dest ?? '',
-                                FontWeight.w600,
-                                13,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 150,
-                        width: 70,
-                        child: Center(
-                          child: Icon(
-                            Icons.compare_arrows_outlined,
+                        SizedBox(
+                          height: 150,
+                          width: 70,
+                          child: Center(
+                            child: Icon(
+                              Icons.compare_arrows_outlined,
+                              color: Colors.blue,
+                              size: 35,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                ShowUpAnimation(
+                  delay: 300,
+                  child: SizedBox(
+                    height: 80,
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: whiteColor,
+                            border: Border.all(color: primaryColorDeep),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MingCute.time_line,
+                                color: primaryColorDeep,
+                                size: 25,
+                              ),
+                              SizedBox(height: 3),
+                              headingTextMedium(
+                                context,
+                                '7-10',
+                                FontWeight.w600,
+                                12,
+                                blackColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: whiteColor,
+                            border: Border.all(
+                              color: primaryColorDeep,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MingCute.run_fill,
+                                color: primaryColorDeep,
+                                size: 25,
+                              ),
+                              SizedBox(height: 3),
+                              headingTextMedium(
+                                context,
+                                '4.5km',
+                                FontWeight.w600,
+                                12,
+                                blackColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
                             color: primaryColorDeep,
-                            size: 30,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MingCute.bus_line,
+                                color: whiteColor,
+                                size: 25,
+                              ),
+                              SizedBox(height: 3),
+                              headingTextMedium(
+                                context,
+                                'Trotro',
+                                FontWeight.w600,
+                                12,
+                                whiteColor,
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  height: 80,
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: whiteColor,
-                          border: Border.all(
-                            color: primaryColorDeep!,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MingCute.time_line,
+                        SizedBox(width: 8),
+                        Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: whiteColor,
+                            border: Border.all(
                               color: primaryColorDeep,
-                              size: 25,
                             ),
-                            SizedBox(height: 3),
-                            headingTextMedium(
-                              context,
-                              '7-10',
-                              FontWeight.w600,
-                              12,
-                              blackColor,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: whiteColor,
-                          border: Border.all(
-                            color: primaryColorDeep!,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MingCute.car_line,
+                                color: primaryColorDeep,
+                                size: 25,
+                              ),
+                              SizedBox(height: 3),
+                              headingTextMedium(
+                                context,
+                                'Taxi',
+                                FontWeight.w600,
+                                12,
+                                blackColor,
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MingCute.run_fill,
-                              color: primaryColorDeep,
-                              size: 25,
-                            ),
-                            SizedBox(height: 3),
-                            headingTextMedium(
-                              context,
-                              '4.5km',
-                              FontWeight.w600,
-                              12,
-                              blackColor,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: primaryColorDeep,
-                          // border: Border.all(
-                          //   color: primaryColorDeep!,
-                          // ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MingCute.bus_line,
-                              color: whiteColor,
-                              size: 25,
-                            ),
-                            SizedBox(height: 3),
-                            headingTextMedium(
-                              context,
-                              'Trotro',
-                              FontWeight.w600,
-                              12,
-                              whiteColor,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Container(
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: whiteColor,
-                          border: Border.all(
-                            color: primaryColorDeep!,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MingCute.car_line,
-                              color: primaryColorDeep,
-                              size: 25,
-                            ),
-                            SizedBox(height: 3),
-                            headingTextMedium(
-                              context,
-                              'Taxi',
-                              FontWeight.w600,
-                              12,
-                              blackColor,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Container(
-                  height: 55,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: primaryColorDeep,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      headingTextMedium(
-                        context,
-                        ' Total Fare:',
-                        FontWeight.w500,
-                        18,
-                        whiteColor,
-                      ),
-                      SizedBox(width: 15),
-                      CediSign(
-                        size: 22,
-                        color: whiteColor,
-                        weight: FontWeight.bold,
-                      ),
-                      headingTextMedium(
-                        context,
-                        ' 10.50',
-                        FontWeight.bold,
-                        22,
-                        whiteColor,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -347,42 +313,50 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
             child: FlutterMap(
               options: MapOptions(
                 keepAlive: true,
-                // 5.7931065, -0.7893054
+                initialRotation: -0.0,
                 initialCenter: LatLng(
                   widget.desLat ?? 0.0,
-                  widget.desLong ?? 0.0,
+                  widget.startLong ?? 0.0,
                 ),
-                initialZoom: 13.0,
+                initialZoom: 10.5,
               ),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.app',
                 ),
-                PolylineLayer(
-                  polylines: [
-                    Polyline(
-                      strokeCap: StrokeCap.round,
-                      points: [
-                        LatLng(widget.startLat ?? 0.0, widget.startLong ?? 0.0),
-                        LatLng(
-                          widget.desLat ?? 0.0,
-                          widget.desLong ?? 0.0,
-                        ),
-                      ],
-                      strokeWidth: 4,
-                      color: Colors.blue,
-                    ),
-                  ],
+                FutureBuilder<List<LatLng>?>(
+                  future: lineService.fetchRouteCoordinates(
+                    LatLng(widget.startLat ?? 0.0, widget.startLong ?? 0.0),
+                    LatLng(widget.desLat ?? 0.0, widget.desLong ?? 0.0),
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: const CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData) {
+                      return PolylineLayer(
+                        polylines: [
+                          Polyline(
+                            strokeCap: StrokeCap.round,
+                            points: snapshot.data!,
+                            strokeWidth: 4,
+                            color: Colors.blue,
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
                 ),
                 MarkerLayer(
                   alignment: Alignment.center,
                   markers: [
                     Marker(
-                      point: // initialCenter,
-                          //const LatLng(5.7931065, -0.7893054),
-                          LatLng(
-                              widget.startLat ?? 0.0, widget.startLong ?? 0.0),
+                      point: LatLng(
+                          widget.startLat ?? 0.0, widget.startLong ?? 0.0),
                       child: Builder(
                         builder: (BuildContext context) {
                           return GestureDetector(
@@ -408,42 +382,17 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
                                 },
                               );
                             },
-                            child: Container(
+                            child: Image.asset(
                               height: 50,
-                              width: 350,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: primarySucessShade,
-                              ),
-                              child: Container(
-                                height: 30,
-                                width: 30,
-                                decoration: const BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.green,
-                                      spreadRadius: 1.5,
-                                      blurRadius: 2,
-                                    )
-                                  ],
-                                  shape: BoxShape.circle,
-                                  color: Colors.green,
-                                ),
-                                child: const Icon(
-                                  Icons.location_on,
-                                  size: 23,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              width: 50,
+                              'assets/pngs/place_marker_48px.png',
                             ),
                           );
                         },
                       ),
                     ),
                     Marker(
-                      point: // initialCenter,
-                          //const LatLng(5.7931065, -0.7893054),
-                          LatLng(
+                      point: LatLng(
                         widget.desLat ?? 0.0,
                         widget.desLong ?? 0.0,
                       ),
@@ -472,33 +421,10 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
                                 },
                               );
                             },
-                            child: Container(
+                            child: Image.asset(
                               height: 50,
-                              width: 350,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: primarySucessShade,
-                              ),
-                              child: Container(
-                                height: 30,
-                                width: 30,
-                                decoration: const BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.red,
-                                      spreadRadius: 1.5,
-                                      blurRadius: 2,
-                                    )
-                                  ],
-                                  shape: BoxShape.circle,
-                                  color: Colors.red,
-                                ),
-                                child: const Icon(
-                                  Icons.location_searching_outlined,
-                                  size: 23,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              width: 50,
+                              'assets/pngs/bus_48px.png',
                             ),
                           );
                         },
@@ -517,51 +443,59 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
                 ),
               ],
             ),
-
-            // Loading indicator overlay
           ),
           if (isLoading)
             const Center(
               child: CircularProgressIndicator(),
             ),
-          /* Positioned(
+          Positioned(
             left: 20,
-            bottom: 20,
-            child: Container(
-              height: 40,
-              width: 160,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: tertiaryColor,
-                boxShadow: const [
-                  BoxShadow(
-                    spreadRadius: 2,
-                    blurRadius: 10,
-                    color: Colors.black12,
-                  ),
-                ],
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LineIcons.phone,
-                    color: primaryColor,
-                    size: 20,
-                  ),
-                  SizedBox(width: 3),
-                  Text(
-                    "Call Emergency Now",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+            right: 20,
+            top: 40,
+            child: ShowUpAnimation(
+              delay: 400,
+              child: Container(
+                height: 55,
+                width: 160,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: tertiaryColor,
+                  boxShadow: const [
+                    BoxShadow(
+                      spreadRadius: 4,
+                      blurRadius: 13,
+                      color: Colors.black12,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    headingTextMedium(
+                      context,
+                      ' Total fare:',
+                      FontWeight.w500,
+                      20,
+                      blackColor,
+                    ),
+                    SizedBox(width: 15),
+                    CediSign(
+                      size: 23,
+                      color: Colors.red,
+                      weight: FontWeight.bold,
+                    ),
+                    headingTextMedium(
+                      context,
+                      ' 10.50',
+                      FontWeight.bold,
+                      23,
+                      Colors.red,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        */
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trotrolive_mobile_new/presentation/stories/pages/stories_screen.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/components/trips_page_arguments.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/pages/trips_main_screen.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/pages/trips_screen.dart';
@@ -52,6 +53,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           fare: args['fare'],
         ),
       );
+
+    case '/stories':
+      return slideFromRight(StoriesPage());
 
     default:
       return MaterialPageRoute(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:toastification/toastification.dart';
 import 'package:trotrolive_mobile_new/presentation/stations/repository/model/stations_model.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/shimmer_effect.dart';
@@ -9,6 +10,7 @@ import '../../../utils/constants/color constants/colors.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../../stations/bloc/stations_bloc.dart';
 import '../../trips/components/trips_page_arguments.dart';
+import '../components/stories_container.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -29,8 +31,9 @@ class _MyHomePageState extends State<MyHomePage>
   String destination = '';
   List<StationModel>? station;
   StationModel? loadedStation;
-
   final destinationController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -297,81 +300,7 @@ class _MyHomePageState extends State<MyHomePage>
                             labelseeAllText(context, 'See All'),
                           ],
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            // Navigator.pushNamed(context, '/events');
-                          },
-                          child: Container(
-                            height: 155,
-                            width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              border: Border.all(
-                                  width: 2.5, color: primaryContainerShade),
-                              borderRadius: BorderRadius.circular(17),
-                            ),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  height: 150,
-                                  width: 175,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        headingTextMedium(
-                                            context,
-                                            'Kaneshie Station Moments',
-                                            FontWeight.w600,
-                                            14),
-                                        SizedBox(height: 8),
-                                        subheadingTextMedium(
-                                          context,
-                                          'Vendors shouting, passengers rushing...',
-                                          12,
-                                        ),
-                                        SizedBox(height: 10),
-                                        Container(
-                                          height: 30,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            color: primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(40),
-                                          ),
-                                          child: Center(
-                                            child: labelTextRegular(
-                                              context,
-                                              'View more',
-                                              whiteColor,
-                                              11.5,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 150,
-                                  width: 145,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: Image.asset(
-                                              "assets/images/feedbackImage.png")
-                                          .image,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        StoriesHomeContainer(),
                         SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -391,17 +320,22 @@ class _MyHomePageState extends State<MyHomePage>
                               isMessage = true;
                               debugPrint("Fetch Failed");
                               WidgetsBinding.instance.addPostFrameCallback((_) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    elevation: 0.5,
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.all(8),
-                                    content: Text(
-                                      state.error,
-                                      style: const TextStyle(),
-                                    ),
-                                    backgroundColor: blackColor,
+                                toastification.show(
+                                  showProgressBar: false,
+                                  description: Column(
+                                    children: [
+                                      headingTextMedium(
+                                        context,
+                                        state.error,
+                                        FontWeight.w500,
+                                        12,
+                                        whiteColor,
+                                      ),
+                                    ],
                                   ),
+                                  autoCloseDuration: const Duration(seconds: 7),
+                                  style: ToastificationStyle.fillColored,
+                                  type: ToastificationType.error,
                                 );
                               });
                             }
@@ -459,10 +393,8 @@ class _MyHomePageState extends State<MyHomePage>
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      _dotIcon(
-                                                          Colors.blue,
-                                                          Icons
-                                                              .location_on_outlined),
+                                                      _dotIcon(25, 25),
+                                                      const SizedBox(height: 5),
                                                       ...List.generate(
                                                         5,
                                                         (_) => const Icon(
@@ -489,7 +421,7 @@ class _MyHomePageState extends State<MyHomePage>
                                                             FontWeight.w600,
                                                             14),
                                                         subheadingText(context,
-                                                            "${state.stations?[index].distanceToUser.toDouble()} km",
+                                                            "${state.stations?[index].distanceToUser.round()} km",
                                                             size: 10),
                                                         const SizedBox(
                                                             height: 5),
@@ -687,7 +619,11 @@ class _MyHomePageState extends State<MyHomePage>
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.red[50],
                                   radius: 20,
-                                  child: const Icon(Icons.ads_click_rounded),
+                                  child: Image.asset(
+                                    height: 25,
+                                    width: 25,
+                                    'assets/pngs/location_48px.png',
+                                  ),
                                 ),
                                 title: Text(
                                   startPoint ?? 'No station selected',
@@ -703,7 +639,7 @@ class _MyHomePageState extends State<MyHomePage>
                                 subtitle: Row(
                                   children: [
                                     Text(
-                                      "Trotro Bus",
+                                      "Trotro",
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelMedium!
@@ -757,63 +693,80 @@ class _MyHomePageState extends State<MyHomePage>
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 14),
-                              TextFormField(
-                                controller: destinationController,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
-                                      fontSize: 15,
-                                      color: blackColor,
-                                      fontWeight: FontWeight.w500,
+                              const SizedBox(height: 13),
+                              Form(
+                                key: formKey,
+                                child: TextFormField(
+                                  controller: destinationController,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        fontSize: 15,
+                                        color: blackColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Enter Destination';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    destination = value!.trim();
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: "Enter Destination",
+                                    hintStyle: TextStyle(
+                                        color: iconGrey.withOpacity(0.7),
+                                        fontSize: 13),
+                                    prefixIcon: Icon(
+                                      MingCute.location_3_fill,
+                                      color: Colors.grey[400],
+                                      size: 23,
                                     ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Enter Destination';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  destination = value!.trim();
-                                },
-                                decoration: InputDecoration(
-                                  hintText: "Enter Destination",
-                                  hintStyle: TextStyle(
-                                      color: iconGrey.withOpacity(0.7),
-                                      fontSize: 13),
-                                  prefixIcon: const Icon(
-                                    MingCute.location_2_fill,
-                                    color: primaryColorDeep,
-                                    size: 23,
-                                  ),
-                                  filled: true,
-                                  isDense: true,
-                                  fillColor: whiteColor,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                    borderSide: BorderSide(color: Colors.green),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: outlineGrey),
-                                    borderRadius: BorderRadius.circular(50),
+                                    filled: true,
+                                    isDense: true,
+                                    fillColor: whiteColor,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                      borderSide:
+                                          BorderSide(color: Colors.green),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: outlineGrey),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 20),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/trips',
-                                    arguments: TripsPageArguments(
-                                      startLocation: startPoint ?? 'Accra',
-                                      destination: destinationController.text,
-                                    ),
-                                  );
-                                  setState(() {
-                                    showPopup = !showPopup;
-                                  });
+                                  if (formKey.currentState!.validate()) {
+                                    formKey.currentState!.save();
+
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/trips',
+                                      arguments: TripsPageArguments(
+                                        startLocation: startPoint ?? 'Accra',
+                                        destination: destinationController.text,
+                                      ),
+                                    );
+                                    setState(() {
+                                      showPopup = !showPopup;
+                                    });
+                                  }
                                 },
                                 child: Container(
                                   height: 50,
@@ -845,14 +798,7 @@ class _MyHomePageState extends State<MyHomePage>
                 ),
             ],
           );
-        }
-
-        // return ShowUpAnimation(
-        //   delay: 200,
-        //   child: PlaceholderContainer(),
-        // );
-
-        );
+        });
   }
 
   Widget PlaceholderContainer(String? text) {
@@ -876,15 +822,11 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget _dotIcon(Color color, IconData icon) {
-    return Container(
-      height: 22,
-      width: 22,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Center(child: Icon(icon, size: 15, color: whiteColor)),
+  Widget _dotIcon(double height, double width) {
+    return Image.asset(
+      height: height,
+      width: width,
+      'assets/pngs/location_48px.png',
     );
   }
 

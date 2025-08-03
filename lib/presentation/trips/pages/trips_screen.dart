@@ -4,6 +4,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:marquee/marquee.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:trotrolive_mobile_new/helpers/widgets/cedi_widget.dart';
+import 'package:trotrolive_mobile_new/helpers/widgets/custom_button.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../bloc/trips_bloc.dart';
@@ -773,15 +774,93 @@ class _TripsPageState extends State<TripsPage>
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          if (index == trips.length) {
-                            return const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Center(
-                                child: SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
+                          if (trips.length == 0) {
+                            return Padding(
+                              padding: EdgeInsets.all(30.0),
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.5,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    headingTextMedium(
+                                      context,
+                                      'No trips found',
+                                      FontWeight.w500,
+                                      17,
+                                    ),
+                                    SizedBox(height: 13),
+                                    subheadingText(
+                                      context,
+                                      'There are no trips available for',
+                                      size: 14,
+                                      maxlines: 3,
+                                      color: subtitleColor,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        subheadingText(
+                                          context,
+                                          ' ${widget.startLocation}  → ',
+                                          size: 14,
+                                          color: Colors.red,
+                                        ),
+                                        subheadingText(
+                                          context,
+                                          ' ${widget.destination}',
+                                          size: 14,
+                                          color: Colors.red,
+                                        ),
+                                      ],
+                                    ),
+                                    subheadingText(
+                                      context,
+                                      ' at the moment',
+                                      size: 14,
+                                      color: subtitleColor,
+                                    ),
+                                    SizedBox(height: 15),
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: Container(
+                                        height: 45,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color:
+                                                subtitleColor.withOpacity(0.5),
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          boxShadow: [],
+                                        ),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Refresh',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                      color: blackColor,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 15,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
@@ -791,7 +870,7 @@ class _TripsPageState extends State<TripsPage>
                               child: Center(child: Text("No trips found.")),
                             );
                           }
-                          final trip = trips[index];
+                          final trip = trips![index];
                           return Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Column(
