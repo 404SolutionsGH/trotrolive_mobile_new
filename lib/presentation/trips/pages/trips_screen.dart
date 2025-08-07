@@ -870,7 +870,7 @@ class _TripsPageState extends State<TripsPage>
                               child: Center(child: Text("No trips found.")),
                             );
                           }
-                          final trip = trips![index];
+                          final trip = trips[index];
                           return Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Column(

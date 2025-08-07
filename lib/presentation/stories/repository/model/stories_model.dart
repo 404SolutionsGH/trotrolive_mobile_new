@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class Story {
   final String headline;
   final String brief;

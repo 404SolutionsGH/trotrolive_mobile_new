@@ -4,7 +4,6 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trotrolive_mobile_new/utils/constants/color%20constants/colors.dart';
-import 'package:trotrolive_mobile_new/utils/constants/image%20constants/image_constants.dart';
 import '../../../helpers/text_widgets.dart';
 import '../bloc/stories_bloc.dart';
 import '../repository/model/stories_model.dart';
