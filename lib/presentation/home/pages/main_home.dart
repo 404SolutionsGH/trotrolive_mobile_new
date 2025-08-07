@@ -77,8 +77,8 @@ class _MainHomePageState extends State<MainHomePage> {
                 text: 'Stories',
               ),
               GButton(
-                icon: MingCute.road_line,
-                text: 'Trips',
+                icon: MingCute.search_line,
+                text: 'Search',
               ),
               GButton(
                 icon: MingCute.luggage_line,

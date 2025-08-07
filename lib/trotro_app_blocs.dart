@@ -29,10 +29,6 @@ class TrotroAppBlocs extends StatelessWidget {
       BlocProvider(
         create: (context) => StoriesBloc()..add(FetchStoriesEvent()),
       ),
-      // BlocProvider(create: (context) => ThemeBloc()),
     ], child: TrotroApp());
-    // BlocProvider(
-    //     create: (context) => LocationBloc()..add(LoadLocationEvent()),
-    //     child: TrotroApp()),
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trotrolive_mobile_new/utils/constants/color%20constants/colors.dart';
 import 'package:trotrolive_mobile_new/utils/constants/image%20constants/image_constants.dart';
@@ -191,13 +192,14 @@ class StoriesPage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       headingTextMedium(context, res.headline,
-                                          FontWeight.w600, 14),
+                                          FontWeight.w600, 14, blackColor, 2),
                                       SizedBox(height: 8),
                                       subheadingTextMedium(
                                         context,
                                         res.brief,
                                         12.5,
                                         iconGrey,
+                                        5,
                                       ),
                                     ],
                                   ),
@@ -277,7 +279,125 @@ class StoriesPage extends StatelessWidget {
           ),
         );
       }
-      return const Placeholder();
+      return Scaffold(
+        backgroundColor: secondaryBg,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(120),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [
+                  primaryColor.withOpacity(0.95),
+                  primaryColorDeep,
+                ],
+              ),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 5,
+                  top: -180,
+                  right: -50,
+                  child: Icon(
+                    Icons.phone_android_rounded,
+                    size: 200,
+                    color: Color.fromRGBO(255, 255, 255, 0.05),
+                  ),
+                ),
+                Positioned(
+                  bottom: -190,
+                  top: 5,
+                  left: -50,
+                  child: Icon(
+                    Icons.luggage_rounded,
+                    size: 280,
+                    color: whiteColor.withOpacity(0.05),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  top: 20,
+                  right: 20,
+                  left: 20,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        headingTextMedium(
+                          context,
+                          "Trotro Stories",
+                          FontWeight.bold,
+                          20,
+                          whiteColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        extendBody: true,
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: ListView.builder(
+              itemCount: 8,
+              itemBuilder: (_, __) {
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 12,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                height: 12,
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
     });
   }
 }

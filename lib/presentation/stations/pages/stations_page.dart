@@ -79,7 +79,7 @@ class _StationsPageState extends State<StationsPage>
           );
         }
         if (locationState is LocationFetchedState && !hasFetched) {
-          address = locationState.address2;
+          address = locationState.address;
           if (state is! StationFetchedState && state is! StationLoading) {
             context.read<StationBloc>().add(FetchStationEvent());
             hasFetched = true;

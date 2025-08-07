@@ -18,63 +18,6 @@ class StationBloc extends Bloc<StationEvent, StationState> {
   StationBloc(this.locationbloc) : super(StationInitial()) {
     on<FetchStationEvent>(fetchStations);
   }
-/*
-  Future<void> fetchStations(
-      FetchStationEvent event, Emitter<StationState> emit) async {
-    emit(StationLoading());
-    debugPrint("Stations Loading...");
-
-    try {
-      final locationState = locationbloc.state;
-      debugPrint("LocationBloc State: $locationState");
-
-      if (locationState is LocationFetchedState) {
-        double? userLatitude = locationState.latitude;
-        double? userLongitude = locationState.longitude;
-        debugPrint("User Lat: $userLatitude, Lng: $userLongitude");
-
-        /// STEP 1: Load from cache first
-        final cached = await StationCacheHelper.getCachedStations();
-        if (cached.isNotEmpty) {
-          debugPrint('✅ Loaded from cache: ${cached.length}');
-          emit(StationFetchedState(
-            message: 'Loaded from cache',
-            stations: cached,
-            isLoaded: true,
-            fromCache: true,
-          ));
-        }
-
-        /// STEP 2: Then attempt to refresh from API if not already loaded
-        if (!isLoaded || event is ForceRefreshStationEvent) {
-          nearbyStations = await stationService.fetchStationsApi(
-              userLatitude, userLongitude);
-
-          if (nearbyStations != null && nearbyStations!.isNotEmpty) {
-            debugPrint('✅ Stations fetched from API');
-            await StationCacheHelper.cacheStations(nearbyStations!);
-
-            emit(StationFetchedState(
-              message: 'Stations Fetched Successfully',
-              stations: nearbyStations!,
-              isLoaded: true,
-              fromCache: false,
-            ));
-          } else {
-            debugPrint('⚠️ No nearby stations found.');
-            emit(StationFailureState(
-                error: 'No nearby stations at your location.'));
-          }
-        }
-      } else if (locationState is LocationFailure) {
-        emit(StationFailureState(error: 'Your location couldn\'t load'));
-      }
-    } catch (error) {
-      debugPrint('❌ Error: $error');
-      emit(StationFailureState(error: 'Error fetching stations: $error'));
-    }
-  }
-*/
 
   Future<void> fetchStations(
       FetchStationEvent event, Emitter<StationState> emit) async {

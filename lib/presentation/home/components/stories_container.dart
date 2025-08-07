@@ -30,7 +30,7 @@ class StoriesHomeContainer extends StatelessWidget {
               height: 180,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: stories.length,
+                itemCount: 4,
                 itemBuilder: (context, index) {
                   return storyWidget(context, stories[index]);
                 },

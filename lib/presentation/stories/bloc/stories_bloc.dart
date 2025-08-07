@@ -11,7 +11,7 @@ part 'stories_state.dart';
 class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   static const String _cacheKey = 'cached_stories';
   static const String _cacheTimeKey = 'cached_stories_time';
-  static const Duration _cacheDuration = Duration(hours: 1);
+  static const Duration _cacheDuration = Duration(minutes: 2);
   late final SharedPreferences _prefs;
 
   StoriesBloc() : super(StoriesInitial()) {
@@ -40,7 +40,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         }
       }
 
-      final freshStories = await StoryService.fetchStories();
+      final freshStories = await StoryService.fetchStories(limit: 50);
       await _cacheStories(freshStories);
 
       emit(StoriesFetchedState(

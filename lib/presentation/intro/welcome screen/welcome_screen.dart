@@ -60,7 +60,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             );
           });
         } else if (state is AuthenticatedState) {
-          Navigator.pushReplacementNamed(context, '/mainhome');
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/mainhome',
+            (Route<dynamic> route) => false,
+          );
           WidgetsBinding.instance.addPostFrameCallback((_) {
             toastification.show(
               showProgressBar: false,
