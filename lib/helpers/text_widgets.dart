@@ -46,6 +46,22 @@ headingTextMedium(context, String text,
   );
 }
 
+storiesHeadingText(context, String text,
+    [FontWeight? weight, double? size, Color? color, int? lines]) {
+  return Text(
+    textAlign: TextAlign.start,
+    overflow: TextOverflow.ellipsis,
+    softWrap: true,
+    maxLines: lines ?? 5,
+    text,
+    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+          color: color ?? blackColor,
+          fontWeight: weight ?? FontWeight.bold,
+          fontSize: size ?? 19,
+        ),
+  );
+}
+
 headingTextMedium2(context, String text,
     [FontWeight? weight, double? size, Color? color]) {
   return Text(
@@ -177,6 +193,20 @@ subheadingTextMedium(context, String text, double? size,
     textAlign: TextAlign.start,
     overflow: TextOverflow.ellipsis,
     maxLines: lines ?? 5,
+    text,
+    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+          color: color ?? subtitleColor,
+          fontSize: size ?? 16,
+        ),
+  );
+}
+
+storySubheadingText(context, String text, double? size,
+    [Color? color, int? lines]) {
+  return Text(
+    textAlign: TextAlign.start,
+    overflow: TextOverflow.ellipsis,
+    maxLines: lines ?? 7,
     text,
     style: Theme.of(context).textTheme.bodySmall!.copyWith(
           color: color ?? subtitleColor,

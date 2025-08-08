@@ -4,6 +4,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trotrolive_mobile_new/presentation/stations/repository/model/stations_model.dart';
+import 'package:trotrolive_mobile_new/utils/constants/image%20constants/image_constants.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/shimmer_effect.dart';
 import '../../../utils/constants/color constants/colors.dart';
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage>
           return Stack(
             children: [
               Scaffold(
-                backgroundColor: barBg2,
+                backgroundColor: whiteColor,
                 extendBody: true,
                 appBar: PreferredSize(
                   preferredSize: const Size.fromHeight(190),
@@ -283,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage>
                 body: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.all(11.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
