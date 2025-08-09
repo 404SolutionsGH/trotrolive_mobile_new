@@ -2,17 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
-  String? id;
-  late String? username;
-  late String? email;
-  late String? phone;
-  late String? password;
+  final String id;
+  final String username;
+  final String email;
+  final String? phone;
+
   UserModel({
-    this.id,
+    required this.id,
     required this.username,
     required this.email,
-    required this.phone,
-    required this.password,
+    this.phone,
   });
 
   Map<String, dynamic> toJson() {
@@ -21,42 +20,52 @@ class UserModel {
       'username': username,
       'email': email,
       'phone': phone,
-      'password': password,
     };
   }
 
-  UserModel.defaultModel() {
-    id = null;
-    username = 'Default username';
-    email = 'default@example.com';
-    phone = '233################';
-    password = 'Default Password';
-  }
+  factory UserModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    if (data == null) throw Exception('User data is null');
 
-  factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'],
-      email: map['email'],
-      username: map['username'],
-      phone: map['phone'],
-      password: map['password'],
+      id: data['id'] ?? snapshot.id,
+      username: data['username'] ?? 'Unknown',
+      email: data['email'] ?? '',
+      phone: data['phone'],
     );
   }
 
-  factory UserModel.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document) {
-    if (document.exists) {
-      final data = document.data()!;
-      return UserModel(
-        id: FirebaseAuth.instance.currentUser!.uid,
-        username: data['username'],
-        email: data['email'],
-        phone: data['phone'],
-        password: data['password'],
-      );
-    } else {
-      print('Document not found for id: ${document.id}');
-      return UserModel.defaultModel();
+  factory UserModel.empty() {
+    return UserModel(
+      id: '',
+      username: 'Guest',
+      email: '',
+      phone: null,
+    );
+  }
+
+  static Future<UserModel> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return UserModel.empty();
+    }
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc, null);
+      }
+      return UserModel.empty();
+    } catch (e) {
+      print('Error fetching user: $e');
+      return UserModel.empty();
     }
   }
 }

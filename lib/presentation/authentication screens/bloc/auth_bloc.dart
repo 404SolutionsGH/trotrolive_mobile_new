@@ -63,10 +63,10 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
         username: event.username,
         phone: event.phone,
         email: event.email,
-        password: event.password,
       );
 
-      await AccountHelper.createUser(user);
+      // await AccountHelper.createUser(user);
+      await UserHelper().createUserDb(user);
 
       emit(AuthenticatedState(message: 'Account Created Successfully!!'));
       debugPrint('Account Created Successfully!!');
@@ -96,8 +96,10 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
         password: event.password,
       );
 
-      emit(AuthenticatedState(message: 'Login Succesful!!'));
-      debugPrint('Login Succesful!!');
+      emit(AuthenticatedState(
+          message: 'Login Succesful!!', userId: _auth.currentUser!.uid));
+      debugPrint('Login Succesful with  ID ${_auth.currentUser!.uid}');
+
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('authToken', _auth.currentUser!.uid);
 
@@ -146,19 +148,38 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     }
   }
 
-  Future<void> currentUser(
-      CurrentUserEvent event, Emitter<AuthState> emit) async {
-    try {
-      UserModel? userData;
-      emit(UserLoadingState());
-      debugPrint("Loading current user..");
+  // Future<void> currentUser(
+  //     CurrentUserEvent event, Emitter<AuthState> emit) async {
+  //   try {
+  //     UserModel? userData;
+  //     emit(UserLoadingState());
+  //     debugPrint("Loading current user..");
+  //     if (event.userId!.isNotEmpty) {
+  //       userData = await UserHelper.getCurrentUser(event.userId);
+  //       emit(CurrentUserState(userData));
+  //       debugPrint("Current user:$userData");
+  //     } else {
+  //       emit(UserLoadingFailState("Current user fetch fail.."));
+  //     }
+  //   } catch (e) {
+  //     emit(UserLoadingFailState(e.toString()));
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
-      if (event.userId.isNotEmpty) {
-        userData = await UserHelper.getCurrentUser(event.userId);
-        emit(CurrentUserState(userData));
-        debugPrint("Current user:$userData");
+  Future<void> currentUser(
+    CurrentUserEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(UserLoadingState());
+
+    try {
+      final user = await UserModel.getCurrentUser();
+
+      if (user.id.isNotEmpty) {
+        emit(CurrentUserState(user));
       } else {
-        emit(UserLoadingFailState("Current user fetch fail.."));
+        emit(UserLoadingFailState("No authenticated user found"));
       }
     } catch (e) {
       emit(UserLoadingFailState(e.toString()));

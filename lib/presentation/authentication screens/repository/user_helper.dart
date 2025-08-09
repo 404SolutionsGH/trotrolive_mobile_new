@@ -6,73 +6,74 @@ class UserHelper {
   static final _db = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
   static final firebaseUser = FirebaseAuth.instance.currentUser;
-
-  Future<void> createUserDb(UserModel user) async {
+  Future<void> createUserDb(UserModel userModel) async {
     try {
-      final userId = firebaseUser!.uid;
-      await _db.collection("users").doc(userId).set(user.toJson());
+      final firebaseUser = _auth.currentUser;
+      if (firebaseUser == null) throw Exception('No authenticated user');
+
+      await _db.collection("users").doc(firebaseUser.uid).set({
+        'id': firebaseUser.uid,
+        'username': userModel.username,
+        'email': userModel.email,
+        'phone': userModel.phone,
+      });
       print("Account created successfully");
     } catch (error) {
       print("Error creating user in Firestore: $error");
-    }
-  }
-
-  Future<UserModel?> getUserDetails(String email) async {
-    try {
-      final snapshot =
-          await _db.collection("users").where("email", isEqualTo: email).get();
-      print(snapshot);
-      if (snapshot.docs.isNotEmpty) {
-        return UserModel.fromSnapshot(snapshot.docs.first);
-      } else {
-        return null;
-      }
-    } catch (error) {
-      print('Error fetching user details: $error');
       rethrow;
     }
   }
 
-  static Future<UserModel?> getCurrentUser(String id) async {
+  Future<UserModel?> getUserById(String userId) async {
     try {
-      final snapshot =
-          await _db.collection("users").where("id", isEqualTo: id).get();
-      print(snapshot);
-      print("ID from Post Page $id");
-      if (snapshot.docs.isNotEmpty) {
-        return UserModel.fromSnapshot(snapshot.docs.first);
-      } else {
-        return null;
+      final doc = await _db.collection("users").doc(userId).get();
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc, null);
       }
-    } catch (error) {
-      print('Error fetching user details: $error');
-      rethrow;
-    }
-  }
-
-  Future<List<UserModel>> fetchUser(String? name) async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await _db.collection("users").where("id", isEqualTo: name).get();
-      final serviceman =
-          querySnapshot.docs.map((doc) => UserModel.fromSnapshot(doc)).toList();
-      print("Fetched ${serviceman.length} $name successfully");
-      //totalService2 = serviceman.length;
-      return serviceman;
-    } catch (error) {
-      print("Error fetching $name: $error");
-      return [];
-    }
-  }
-
-  // Get the current user's ID
-  Future<String?> getCurrentUserId() async {
-    try {
-      User? user = _auth.currentUser;
-      return user?.uid;
-    } catch (e) {
-      print("Error getting current user ID: $e");
       return null;
+    } catch (error) {
+      print('Error fetching user details: $error');
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    try {
+      final snapshot = await _db
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return UserModel.fromFirestore(snapshot.docs.first, null);
+      }
+      return null;
+    } catch (error) {
+      print('Error fetching user by email: $error');
+      rethrow;
+    }
+  }
+
+  static Future<UserModel> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return UserModel.empty();
+    }
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc, null);
+      }
+      return UserModel.empty();
+    } catch (e) {
+      print('Error fetching user: $e');
+      return UserModel.empty();
     }
   }
 }

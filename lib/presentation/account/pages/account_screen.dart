@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:trotrolive_mobile_new/presentation/authentication%20screens/repository/data%20model/user_model.dart';
 import '../../../helpers/animation/showup_animation.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../utils/constants/color constants/colors.dart';
@@ -16,11 +18,24 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   File? image;
+  UserModel? user;
+  @override
+  void initState() {
+    super.initState();
+
+    final authBloc = context.read<AuthBloc>();
+    authBloc.add(CurrentUserEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (BuildContext context, AuthState state) {
+      listener: (BuildContext context, state) {
+        if (state is AuthLogoutSuccesState) {
+          Navigator.pushReplacementNamed(context, '/onboarding');
+        }
+      },
+      builder: (BuildContext context, AuthState state) {
         if (state is AuthLoadingState) {
           debugPrint('Logging out....!!');
         }
@@ -39,11 +54,15 @@ class _AccountPageState extends State<AccountPage> {
               ),
             );
           });
-        } else if (state is AuthLogoutSuccesState) {
-          Navigator.pushReplacementNamed(context, '/onboarding');
         }
-      },
-      builder: (BuildContext context, AuthState state) {
+        if (state is CurrentUserState) {
+          if (state.user != null) {
+            user = state.user;
+            debugPrint("User loaded: ${user!.username}");
+          } else {
+            debugPrint("Received CurrentUserState but userData is null");
+          }
+        }
         return Scaffold(
           backgroundColor: whiteColor,
           body: SingleChildScrollView(
@@ -149,14 +168,14 @@ class _AccountPageState extends State<AccountPage> {
                             SizedBox(height: 18),
                             headingTextMedium(
                               context,
-                              "Patrick Boat",
+                              user?.username ?? 'username',
                               FontWeight.w600,
                               23,
                               whiteColor,
                             ),
                             subheadingText(
                               context,
-                              'Member since 2022',
+                              'Member since 2025',
                               size: 12,
                               color: secondaryColor3,
                             ),
@@ -229,7 +248,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         subtitle: subheadingTextMedium(
                           context,
-                          '+233245513607',
+                          user?.phone ?? 'Phone',
                           11.5,
                         ),
                       ),
@@ -264,7 +283,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         subtitle: subheadingTextMedium(
                           context,
-                          'kofi.boat@gmail.com',
+                          user?.email ?? 'email',
                           11.5,
                         ),
                       ),
@@ -307,7 +326,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         subtitle: subheadingTextMedium(
                           context,
-                          'Achimota to Madina',
+                          'Not available',
                           11.5,
                         ),
                       ),
@@ -342,7 +361,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         subtitle: subheadingTextMedium(
                           context,
-                          '15 trips',
+                          '0 trips',
                           11.5,
                         ),
                       ),

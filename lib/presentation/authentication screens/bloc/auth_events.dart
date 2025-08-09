@@ -37,7 +37,5 @@ class ForgotPasswordEvent extends AuthEvents {}
 class PickImageEvent extends AuthEvents {}
 
 class CurrentUserEvent extends AuthEvents {
-  final String userId;
-
-  CurrentUserEvent(this.userId);
+  CurrentUserEvent();
 }

@@ -9,8 +9,12 @@ class AuthLoadingState extends AuthState {}
 
 class AuthenticatedState extends AuthState {
   final String message;
+  String? userId;
 
-  AuthenticatedState({required this.message});
+  AuthenticatedState({
+    required this.message,
+    this.userId,
+  });
 }
 
 class UnAuthenticatedState extends AuthState {}
