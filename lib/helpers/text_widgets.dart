@@ -222,7 +222,7 @@ subheadingTextMediumIntro(context, String text, double? size) {
     maxLines: 4,
     text,
     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-          color: Colors.grey,
+          color: Colors.black87,
           fontSize: size ?? 15,
         ),
   );

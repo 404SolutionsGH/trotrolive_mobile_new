@@ -120,11 +120,22 @@ class _LostItemScreenState extends State<LostItemScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 15),
-                headingTextMedium(
-                  context,
-                  'Complete the form below',
-                  FontWeight.w600,
-                  14,
+                Container(
+                  height: 30,
+                  width: 230,
+                  decoration: BoxDecoration(
+                    color: subtitleColor,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Center(
+                    child: headingTextMedium(
+                      context,
+                      'Complete the form below',
+                      FontWeight.w600,
+                      14,
+                      whiteColor,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 15),
                 _buildInputLabel(context, 'Your Full Name'),

@@ -233,7 +233,8 @@ class _MyHomePageState extends State<MyHomePage>
                                           prefixIcon: const Icon(
                                             MingCute.search_2_line,
                                             color: secondaryColor,
-                                            size: 23,
+                                            weight: 5,
+                                            size: 25,
                                           ),
                                           suffixIcon: GestureDetector(
                                             onTap: () {
@@ -298,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage>
                               FontWeight.w600,
                               14,
                             ),
-                            labelseeAllText(context, 'See All'),
+                            labelseeAllText(context, 'view all'),
                           ],
                         ),
                         StoriesHomeContainer(),
@@ -308,11 +309,11 @@ class _MyHomePageState extends State<MyHomePage>
                           children: [
                             headingTextMedium(
                               context,
-                              'Nearby Stations',
+                              'Stations nearby',
                               FontWeight.w600,
                               14,
                             ),
-                            labelseeAllText(context, 'See all stations'),
+                            labelseeAllText(context, 'view all'),
                           ],
                         ),
                         BlocBuilder<StationBloc, StationState>(
@@ -384,7 +385,7 @@ class _MyHomePageState extends State<MyHomePage>
                                                 color: primaryContainerShade,
                                                 width: 2.5),
                                             borderRadius:
-                                                BorderRadius.circular(17),
+                                                BorderRadius.circular(15),
                                           ),
                                           child: Column(
                                             children: [
@@ -428,17 +429,19 @@ class _MyHomePageState extends State<MyHomePage>
                                                             height: 5),
                                                         Row(
                                                           children: [
-                                                            subheadingText(
-                                                                context,
-                                                                'Station Type: ',
-                                                                size: 11),
+                                                            Image.asset(
+                                                              height: 15,
+                                                              width: 15,
+                                                              'assets/pngs/minibus_48px.png',
+                                                            ),
+                                                            SizedBox(width: 2),
                                                             subheadingText(
                                                               context,
                                                               state.stations?[index]
                                                                           .isBusStop ==
                                                                       true
-                                                                  ? ' Bus Stop'
-                                                                  : ' Not Bus Stop',
+                                                                  ? 'Bus Stop'
+                                                                  : 'Not Bus Stop',
                                                               size: 11,
                                                               color:
                                                                   Colors.green,
@@ -477,27 +480,27 @@ class _MyHomePageState extends State<MyHomePage>
                                                   ),
                                                 ],
                                               ),
-                                              const Divider(
-                                                  color: primaryContainerShade),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  _iconLabel(
-                                                      context,
-                                                      MingCute.heart_line,
-                                                      'Favorite'),
-                                                  _iconLabel(
-                                                      context,
-                                                      Icons.ios_share_outlined,
-                                                      'Share'),
-                                                  _iconLabel(
-                                                      context,
-                                                      MingCute.eye_2_line,
-                                                      '1.2k visits'),
-                                                ],
-                                              ),
+                                              // const Divider(
+                                              //     color: primaryContainerShade),
+                                              // Row(
+                                              //   mainAxisAlignment:
+                                              //       MainAxisAlignment
+                                              //           .spaceEvenly,
+                                              //   children: [
+                                              //     _iconLabel(
+                                              //         context,
+                                              //         MingCute.heart_line,
+                                              //         'Favorite'),
+                                              //     _iconLabel(
+                                              //         context,
+                                              //         Icons.ios_share_outlined,
+                                              //         'Share'),
+                                              //     _iconLabel(
+                                              //         context,
+                                              //         MingCute.eye_2_line,
+                                              //         '1.2k visits'),
+                                              //   ],
+                                              // ),
                                             ],
                                           ),
                                         ),

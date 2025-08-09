@@ -463,8 +463,8 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                           child: Center(
                             child: Icon(
-                              MingCute.moon_line,
-                              color: primaryColor,
+                              MingCute.exit_line,
+                              color: Colors.red,
                               size: 20,
                             ),
                           ),

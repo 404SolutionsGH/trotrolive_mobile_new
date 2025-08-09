@@ -318,7 +318,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       fontSize: 13),
                                   prefixIcon: const Icon(
                                     MingCute.user_2_line,
-                                    color: iconGrey,
+                                    color: primaryColorDeep,
                                     size: 22,
                                   ),
                                   filled: true,
@@ -369,7 +369,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       fontSize: 13),
                                   prefixIcon: const Icon(
                                     MingCute.phone_line,
-                                    color: iconGrey,
+                                    color: primaryColorDeep,
                                     size: 22,
                                   ),
                                   filled: true,
@@ -418,7 +418,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       fontSize: 13),
                                   prefixIcon: const Icon(
                                     MingCute.mail_line,
-                                    color: iconGrey,
+                                    color: primaryColorDeep,
                                     size: 22,
                                   ),
                                   filled: true,
@@ -472,7 +472,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       fontSize: 13),
                                   prefixIcon: const Icon(
                                     MingCute.lock_line,
-                                    color: iconGrey,
+                                    color: primaryColorDeep,
                                     size: 22,
                                   ),
                                   // suffixIcon: GestureDetector(
@@ -708,7 +708,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       fontSize: 13),
                                   prefixIcon: const Icon(
                                     MingCute.mail_line,
-                                    color: iconGrey,
+                                    color: primaryColorDeep,
                                     size: 22,
                                   ),
                                   filled: true,
@@ -762,7 +762,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                       fontSize: 13),
                                   prefixIcon: const Icon(
                                     MingCute.lock_line,
-                                    color: iconGrey,
+                                    color: primaryColorDeep,
                                     size: 22,
                                   ),
                                   // suffixIcon: GestureDetector(

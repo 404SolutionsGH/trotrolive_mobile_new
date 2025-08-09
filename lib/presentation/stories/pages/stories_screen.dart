@@ -117,23 +117,24 @@ class StoriesPage extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      headingTextMedium(
-                        context,
-                        'New stories',
-                        FontWeight.w600,
-                        14,
-                      ),
-                    ],
-                  ),
+                  // SizedBox(height: 15),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     headingTextMedium(
+                  //       context,
+                  //       'New stories',
+                  //       FontWeight.w600,
+                  //       14,
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(height: 15),
                   SizedBox(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
+                      scrollDirection: Axis.vertical,
                       itemCount: state.stories.stories.length,
                       itemBuilder: (BuildContext context, int index) {
                         final res = state.stories.stories[index];
@@ -197,7 +198,7 @@ class StoriesPage extends StatelessWidget {
                                         context,
                                         res.brief,
                                         12.5,
-                                        iconGrey,
+                                        Colors.black87,
                                         5,
                                       ),
                                     ],
@@ -206,7 +207,7 @@ class StoriesPage extends StatelessWidget {
                                 Positioned(
                                   bottom: -5,
                                   child: Container(
-                                    height: 40,
+                                    height: 50,
                                     width: MediaQuery.of(context).size.width,
                                     padding: EdgeInsets.all(13),
                                     decoration: BoxDecoration(
@@ -216,49 +217,73 @@ class StoriesPage extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.source_outlined,
-                                              color: Colors.blue,
-                                              size: 15,
-                                            ),
-                                            SizedBox(width: 3),
-                                            subheadingTextMedium(
-                                              context,
-                                              res.source,
-                                              12,
-                                              Colors.black87,
-                                            ),
-                                          ],
+                                        Container(
+                                          height: 30,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: subtitleColor,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.source_outlined,
+                                                color: secondaryColor,
+                                                size: 15,
+                                              ),
+                                              SizedBox(width: 3),
+                                              subheadingTextMedium(
+                                                context,
+                                                res.source,
+                                                12,
+                                                whiteColor,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         SizedBox(width: 15),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              MingCute.calendar_line,
-                                              color: Colors.green,
-                                              size: 15,
+                                        Container(
+                                          height: 30,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: subtitleColor,
                                             ),
-                                            SizedBox(width: 3),
-                                            subheadingTextMedium(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                MingCute.calendar_2_line,
+                                                color: Colors.red,
+                                                size: 15,
+                                              ),
+                                              SizedBox(width: 3),
+                                              subheadingTextMedium(
+                                                  context,
+                                                  '${res.publishedAt.day.toString()} / ',
+                                                  10,
+                                                  Colors.black87),
+                                              subheadingTextMedium(
                                                 context,
-                                                '${res.publishedAt.day.toString()} / ',
+                                                '${res.publishedAt.month.toString()} / ',
                                                 10,
-                                                Colors.black87),
-                                            subheadingTextMedium(
-                                              context,
-                                              '${res.publishedAt.month.toString()} / ',
-                                              10,
-                                              Colors.black87,
-                                            ),
-                                            subheadingTextMedium(
-                                              context,
-                                              res.publishedAt.year.toString(),
-                                              10,
-                                              Colors.black87,
-                                            ),
-                                          ],
+                                                Colors.black87,
+                                              ),
+                                              subheadingTextMedium(
+                                                context,
+                                                res.publishedAt.year.toString(),
+                                                10,
+                                                Colors.black87,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),

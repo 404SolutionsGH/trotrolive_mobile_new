@@ -50,13 +50,19 @@ class StoriesHomeContainer extends StatelessWidget {
             SizedBox(
               height: 180,
               width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.all(0),
+              child: PageView.builder(
                 scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
                 itemCount: 4,
                 itemBuilder: (context, index) {
-                  return storyWidget(context, stories[index], imgs[index]);
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: storyWidget(
+                      context,
+                      stories[index],
+                      imgs[index],
+                    ),
+                  );
                 },
               ),
             ),
@@ -73,8 +79,7 @@ class StoriesHomeContainer extends StatelessWidget {
       },
       child: Container(
         height: 150,
-        width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
@@ -118,12 +123,17 @@ class StoriesHomeContainer extends StatelessWidget {
               Positioned(
                 right: 5,
                 child: Container(
-                  height: 25,
-                  width: 25,
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(71, 0, 0, 0),
+                    borderRadius: BorderRadius.circular(35),
+                  ),
                   child: Center(
                     child: Icon(
-                      MingCute.heart_line,
-                      color: secondaryColor4,
+                      size: 20,
+                      MingCute.radio_line,
+                      color: whiteColor,
                     ),
                   ),
                 ),
