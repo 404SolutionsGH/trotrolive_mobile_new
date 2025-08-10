@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trotrolive_mobile_new/presentation/trips/repository/data/trips_api_service.dart';
@@ -20,6 +24,135 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
         .toLowerCase();
   }
 
+  Future<void> fetchTrips(
+    FetchTripEvent event,
+    Emitter<TripsState> emit,
+  ) async {
+    try {
+      emit(TripsLoading());
+      debugPrint(
+          "Loading trips from ${event.startingPoint} to ${event.destination}");
+
+      // Validate inputs
+      final startingPoint = event.startingPoint?.trim();
+      final destination = event.destination?.trim();
+
+      if (startingPoint == null ||
+          destination == null ||
+          startingPoint.isEmpty ||
+          destination.isEmpty) {
+        debugPrint('Please provide valid locations');
+        // emit(TripsFailureState(error: 'Please provide valid locations'));
+        return;
+      }
+
+      // Normalize inputs once
+      final normalizedStart = normalize(startingPoint);
+      final normalizedDest = normalize(destination);
+      debugPrint(
+          "Normalized params: start=$normalizedStart, dest=$normalizedDest");
+
+      // Fetch trips with pagination
+      final (trips, nextUrl) = await _fetchPaginatedTrips(
+        startingPoint,
+        destination,
+        maxPages: 10,
+      );
+
+      // Filter relevant trips
+      final filteredTrips = _filterRelevantTrips(
+        trips,
+        normalizedStart,
+        normalizedDest,
+      );
+
+      if (filteredTrips.isEmpty) {
+        emit(TripsEmptyState(message: 'No matching trips found'));
+        return;
+      }
+
+      debugPrint("Fetched ${filteredTrips.length} trips");
+      emit(TripsFetchedState(
+        trips: filteredTrips,
+        nextUrl: nextUrl,
+        message: "Fetched ${filteredTrips.length} trips",
+      ));
+    } on DioException catch (e) {
+      emit(TripsFailureState(error: "Dio error: $e"));
+      debugPrint("Dio error: $e");
+    } on SocketException {
+      emit(TripsFailureState(error: 'No internet connection'));
+    } on TimeoutException {
+      emit(TripsFailureState(error: 'Request timed out'));
+    } on FormatException {
+      emit(TripsFailureState(error: 'Invalid data format'));
+    } catch (e, stackTrace) {
+      debugPrint("Error fetching trips: $e\n$stackTrace");
+      emit(TripsFailureState(error: 'Failed to load trips'));
+    }
+  }
+
+  Future<(List<TripsModel>, String?)> _fetchPaginatedTrips(
+    String start,
+    String dest, {
+    int maxPages = 5,
+  }) async {
+    List<TripsModel> allTrips = [];
+    String? nextUrl;
+    int pageCount = 0;
+
+    do {
+      final response = await tripService.fetchTripsApi(
+        start,
+        dest,
+        url: nextUrl,
+      );
+
+      if (response == null || response.trips.isEmpty) break;
+
+      allTrips.addAll(response.trips);
+      nextUrl = response.nextUrl;
+      pageCount++;
+    } while (pageCount < maxPages && nextUrl != null);
+
+    return (allTrips, nextUrl);
+  }
+
+  List<TripsModel> _filterRelevantTrips(
+    List<TripsModel> trips,
+    String normalizedStart,
+    String normalizedDest,
+  ) {
+    final exactMatches = <TripsModel>{};
+    final partialMatches = <TripsModel>{};
+
+    for (final trip in trips) {
+      final tripStart = normalize(trip.startStation.name);
+      final tripDest = normalize(trip.destination.name);
+
+      // Exact matches (either direction)
+      if ((tripStart == normalizedStart && tripDest == normalizedDest) ||
+          (tripStart == normalizedDest && tripDest == normalizedStart)) {
+        exactMatches.add(trip);
+        continue;
+      }
+
+      // Partial matches
+      if (tripStart.contains(normalizedStart) ||
+          tripDest.contains(normalizedDest) ||
+          tripStart.contains(normalizedDest) ||
+          tripDest.contains(normalizedStart)) {
+        partialMatches.add(trip);
+      }
+    }
+
+    // Return exact matches if found, otherwise partial matches
+    return exactMatches.isNotEmpty
+        ? exactMatches.toList()
+        : partialMatches.toList();
+  }
+
+/*
   Future<void> fetchTrips(
       FetchTripEvent event, Emitter<TripsState> emit) async {
     try {
@@ -100,7 +233,7 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
       emit(TripsFailureState(error: 'Error fetching trips: $e'));
     }
   }
-
+*/
   Future<void> loadMoreTrips(
       LoadMoreTripsEvent event, Emitter<TripsState> emit) async {
     if (isLoadingMore) return;

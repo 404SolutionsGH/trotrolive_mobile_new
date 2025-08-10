@@ -32,3 +32,10 @@ class TripsFailureState extends TripsState {
     required this.error,
   });
 }
+
+class TripsEmptyState extends TripsState {
+  String message;
+  TripsEmptyState({
+    required this.message,
+  });
+}

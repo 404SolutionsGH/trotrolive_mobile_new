@@ -132,9 +132,11 @@ headingTextSemiBold2(context, String text) {
 
 appbarText(context, String text, [Color? color, double? size]) {
   return Text(
+    overflow: TextOverflow.ellipsis,
+    maxLines: 2,
     text,
     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
           fontSize: size ?? 17,
           color: color ?? blackColor,
         ),

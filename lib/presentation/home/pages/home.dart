@@ -4,13 +4,14 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:toastification/toastification.dart';
 import 'package:trotrolive_mobile_new/presentation/stations/repository/model/stations_model.dart';
-import 'package:trotrolive_mobile_new/utils/constants/image%20constants/image_constants.dart';
 import '../../../helpers/text_widgets.dart';
 import '../../../helpers/widgets/shimmer_effect.dart';
 import '../../../utils/constants/color constants/colors.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../../stations/bloc/stations_bloc.dart';
 import '../../trips/components/trips_page_arguments.dart';
+import '../components/pop up/popup_bloc.dart';
+import '../components/pop up/popup_event.dart';
 import '../components/stories_container.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -21,9 +22,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  bool _wentToSettings = false;
   bool hasFetched = false;
   String? address;
   bool isMessage = false;
@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final locationState = BlocProvider.of<LocationBloc>(context).state;
     if (locationState is LocationFetchedState) {
       BlocProvider.of<StationBloc>(context)
@@ -46,6 +47,27 @@ class _MyHomePageState extends State<MyHomePage>
         ));
     }
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        context.read<LocationBloc>().wentToSettings) {
+      context.read<LocationBloc>().wentToSettings = false;
+
+      Future.delayed(Duration(seconds: 2), () {
+        context.read<LocationBloc>().add(LoadLocationEvent());
+      });
+    }
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +83,11 @@ class _MyHomePageState extends State<MyHomePage>
           }
         },
         builder: (context, state) {
+          if (state is LocationFailure &&
+              !context.read<LocationBloc>().wentToSettings) {
+            return Center(child: Text("Failed to fetch location"));
+          }
+
           return Stack(
             children: [
               Scaffold(
@@ -156,25 +183,39 @@ class _MyHomePageState extends State<MyHomePage>
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        subheadingText(
-                                          context,
-                                          'Location',
-                                          align: TextAlign.start,
-                                          size: 12,
-                                          maxlines: 2,
-                                          color: secondaryColor,
-                                        ),
+                                        // subheadingText(
+                                        //   context,
+                                        //   'Location',
+                                        //   align: TextAlign.start,
+                                        //   size: 12,
+                                        //   maxlines: 2,
+                                        //   color: whiteColor,
+                                        // ),
                                         BlocBuilder<LocationBloc,
                                             LocationState>(
                                           builder: (context, state) {
                                             if (state is LocationFetchedState) {
-                                              return appbarText(
-                                                  context,
-                                                  state.address!,
-                                                  whiteColor,
-                                                  12);
+                                              return SizedBox(
+                                                height: 35,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    2,
+                                                child: Center(
+                                                  child: appbarText(
+                                                    context,
+                                                    state.address ?? '',
+                                                    secondaryColor,
+                                                    12,
+                                                  ),
+                                                ),
+                                              );
                                             } else if (state
                                                 is LocationLoading) {
+                                              // final lastAddress = context
+                                              //     .read<LocationBloc>()
+                                              //     .lastKnownAddress;
+                                              // if (lastAddress != null) {
                                               return appbarText(
                                                 context,
                                                 'Location loading.....',
@@ -182,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage>
                                                 12,
                                               );
                                             }
+
                                             return appbarText(
                                               context,
                                               'Getting your location....',
@@ -580,15 +622,15 @@ class _MyHomePageState extends State<MyHomePage>
                   ),
                 ),
               ),
-              if (showPopup)
+              if (showPopup == true)
                 Stack(
                   children: [
                     Positioned.fill(
                       child: GestureDetector(
                         onTap: () {
-                          setState(() {
-                            showPopup = false;
-                          });
+                          context
+                              .read<PopupBloc>()
+                              .add(TogglePopupEvent(false));
                         },
                         child: Container(
                           color: Colors.black.withOpacity(0.5),
@@ -654,32 +696,13 @@ class _MyHomePageState extends State<MyHomePage>
                                     ),
                                   ],
                                 ),
-                                trailing: Container(
-                                  height: 30,
-                                  width: 80,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green.shade100,
-                                    borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(
-                                      color: const Color.fromARGB(
-                                          255, 69, 212, 74),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "Bust Stop",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .copyWith(
-                                            color: Colors.green,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w600,
-                                            height: 3,
-                                          ),
-                                    ),
-                                  ),
-                                ),
+                                // trailing: IconButton(
+                                //   onPressed: () => Navigator.pop(context),
+                                //   icon: Icon(
+                                //     MingCute.close_circle_line,
+                                //     size: 30,
+                                //   ),
+                                // ),
                               ),
                               const SizedBox(height: 20),
                               Row(
